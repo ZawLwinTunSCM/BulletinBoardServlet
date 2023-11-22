@@ -9,11 +9,11 @@ public interface PostDao {
 
     public List<Post> dbGetAllPosts(String searchData, int pageNumber);
 
-    public Post doGetPostById(int id);
+    public Post dbGetPostById(int id);
 
     public void dbUpdatePost(Post post);
 
-    public void dbDeletePots(int id);
+    public void dbDeletePost(int id);
 
     public int dbGetTotalCount(String searchData);
 }

@@ -86,7 +86,7 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public Post doGetPostById(int id) {
+    public Post dbGetPostById(int id) {
         Post post = null;
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(SELECT_POST_BY_ID)) {
@@ -126,7 +126,7 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public void dbDeletePots(int id) {
+    public void dbDeletePost(int id) {
         try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(DELETE_POST_SQL)) {
             statement.setInt(1, id);

@@ -129,7 +129,7 @@ public class PostServlet extends HttpServlet {
 
     private void deletePost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        postService.doDeletePots(id);
+        postService.doDeletePost(id);
         redirectToPage("list", response);
     }
 

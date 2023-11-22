@@ -14,7 +14,7 @@ public interface PostService {
 
     public void doUpdatePost(PostForm post);
 
-    public void doDeletePots(int id);
+    public void doDeletePost(int id);
 
     public int doGetTotalCount(String searchData);
 }

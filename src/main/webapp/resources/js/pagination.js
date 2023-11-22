@@ -130,7 +130,6 @@
 				}
 				$paginationUl.append(pageLi);
 			};
-			console.log(pageCount)
 			if (pageNumber == 1 || pageNumber == null) {
 				previousPageLi.classList.add("disabled");
 			} if (pageNumber == pageCount) {
@@ -277,7 +276,6 @@
 				if (this.options.pageClickCallback) {
 					this.options.pageClickCallback(pageNumber);
 				}
-				console.log(url)
 				return;
 			}
 			event.preventDefault();

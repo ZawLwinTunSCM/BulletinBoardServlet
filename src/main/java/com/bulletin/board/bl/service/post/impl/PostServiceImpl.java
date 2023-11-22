@@ -36,12 +36,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO doGetPostById(int id) {
-        return new PostDTO(postDao.doGetPostById(id));
+        return new PostDTO(postDao.dbGetPostById(id));
     }
 
     @Override
     public void doUpdatePost(PostForm postForm) {
-        PostDTO postDTO = new PostDTO(postDao.doGetPostById(postForm.getId()));
+        PostDTO postDTO = new PostDTO(postDao.dbGetPostById(postForm.getId()));
         postDTO.setTitle(postForm.getTitle());
         postDTO.setDescription(postForm.getDescription());
         postDTO.setStatus(postForm.getStatus());
@@ -52,8 +52,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void doDeletePots(int id) {
-        postDao.dbDeletePots(id);
+    public void doDeletePost(int id) {
+        postDao.dbDeletePost(id);
     }
 
     @Override
