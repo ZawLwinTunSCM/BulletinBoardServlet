@@ -19,7 +19,7 @@ public class ConfigServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/jsp/user/insert.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
     }
 
     @Override

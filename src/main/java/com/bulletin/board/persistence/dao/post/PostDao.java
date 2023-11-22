@@ -9,6 +9,8 @@ public interface PostDao {
 
     public List<Post> dbGetAllPosts(String searchData, int pageNumber);
 
+    public List<Post> dbGetPosts();
+
     public Post dbGetPostById(int id);
 
     public void dbUpdatePost(Post post);

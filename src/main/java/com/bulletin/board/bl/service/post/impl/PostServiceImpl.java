@@ -35,6 +35,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<PostDTO> doGetPosts() {
+        List<PostDTO> postDTOs = new ArrayList<PostDTO>();
+        List<Post> posts = postDao.dbGetPosts();
+        for (int i = 0; i < posts.size(); i++) {
+            PostDTO postDTO = new PostDTO(posts.get(i));
+            postDTO.setAuthor("Leo");
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
+    }
+
+    @Override
     public PostDTO doGetPostById(int id) {
         return new PostDTO(postDao.dbGetPostById(id));
     }

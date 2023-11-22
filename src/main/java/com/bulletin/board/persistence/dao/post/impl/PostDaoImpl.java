@@ -19,6 +19,7 @@ public class PostDaoImpl implements PostDao {
 
     private static final String INSERT_POST_SQL = "INSERT INTO post (title, description, status, created_user_id, updated_user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_ALL_POSTS = "SELECT * FROM post LIMIT 10 OFFSET ?";
+    private static final String SELECT_POSTS = "SELECT * FROM post";
     private static final String SELECT_POST_BY_ID = "SELECT * FROM post WHERE id = ?";
     private static final String SEARCH_POSTS = "SELECT * FROM post WHERE title LIKE ? OR description LIKE ? LIMIT 10 OFFSET ?";
     private static final String UPDATE_POST_SQL = "UPDATE post SET title = ?, description = ?, status = ?, updated_user_id=?, updated_at=? WHERE id = ?";
@@ -68,6 +69,28 @@ public class PostDaoImpl implements PostDao {
             } else {
                 preparedStatement.setInt(1, (pageNumber - 1) * 10);
             }
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                int status = rs.getInt("status");
+                int createdUserId = rs.getInt("created_user_id");
+                int updatedUserId = rs.getInt("updated_user_id");
+                Date updatedAt = rs.getDate("updated_at");
+                posts.add(new Post(id, title, description, status, createdUserId, updatedUserId, null, updatedAt));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
+    }
+
+    @Override
+    public List<Post> dbGetPosts() {
+        List<Post> posts = new ArrayList<>();
+        try (Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(SELECT_POSTS)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("id");

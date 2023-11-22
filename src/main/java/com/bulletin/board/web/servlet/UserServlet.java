@@ -43,7 +43,12 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getPathInfo();
+        HttpSession session = request.getSession();
+        Object role = session.getAttribute("userRole");
         try {
+            if (role == null || role == "") {
+                error403(request, response);
+            }
             switch (action) {
             case "/new":
                 showNewForm(request, response);
@@ -145,6 +150,11 @@ public class UserServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         userService.doDeleteUser(id);
         redirectToPage("list", response);
+    }
+
+    private void error403(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        forwardToPage("/jsp/error/403.jsp", request, response);
     }
 
     private void error404(HttpServletRequest request, HttpServletResponse response)

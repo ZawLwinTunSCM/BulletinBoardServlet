@@ -10,6 +10,8 @@ public interface PostService {
 
     public List<PostDTO> doGetAllPosts(String searchData, int pageNumber);
 
+    public List<PostDTO> doGetPosts();
+
     public PostDTO doGetPostById(int id);
 
     public void doUpdatePost(PostForm post);

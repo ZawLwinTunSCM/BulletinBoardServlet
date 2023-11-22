@@ -1,6 +1,7 @@
 package com.bulletin.board.web.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -56,6 +57,9 @@ public class PostServlet extends HttpServlet {
                 break;
             case "/detail":
                 detailPost(request, response);
+                break;
+            case "/download":
+                exportCSVPost(response);
                 break;
             default:
                 error404(request, response);
@@ -155,5 +159,24 @@ public class PostServlet extends HttpServlet {
         String description = request.getParameter("description");
         int status = Integer.parseInt(request.getParameter("status"));
         return new PostForm(id, title, description, status, id);
+    }
+
+    private void exportCSVPost(HttpServletResponse response) {
+        List<PostDTO> posts = postService.doGetPosts();
+        StringBuilder csvData = new StringBuilder();
+        csvData.append("ID, Title, Description, Author, Status, Posted Date\n");
+        for (int i = 0; i < posts.size(); i++) {
+            PostDTO post = posts.get(i);
+            String status = post.getStatus() == 0 ? "Admin" : "User";
+            csvData.append(post.getId() + "," + post.getTitle() + "," + post.getDescription() + ",Leo," + status + ","
+                    + post.getUpdatedAt() + "\n");
+        }
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=data.csv");
+        try (PrintWriter writer = response.getWriter()) {
+            writer.write(csvData.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

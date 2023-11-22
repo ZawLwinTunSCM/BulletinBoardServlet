@@ -27,9 +27,9 @@
             <div class="col-md-4 d-flex justify-content-between">
               <a href="<%=request.getContextPath()%>/post/new"
                 class="btn btn-primary">Add New Post</a> <a
-                href="<%=request.getContextPath()%>/post/download"
-                class="btn btn-primary">Upload</a> <a
                 href="<%=request.getContextPath()%>/post/upload"
+                class="btn btn-primary">Upload</a> <a
+                href="<%=request.getContextPath()%>/post/download"
                 class="btn btn-primary">Download</a>
             </div>
             <div class="col-md-4"></div>
@@ -57,9 +57,9 @@
             <div class="col-md-4 d-flex justify-content-between">
               <a href="<%=request.getContextPath()%>/post/new"
                 class="btn btn-primary">Add New Post</a> <a
-                href="<%=request.getContextPath()%>/post/download"
-                class="btn btn-primary">Upload</a> <a
                 href="<%=request.getContextPath()%>/post/upload"
+                class="btn btn-primary">Upload</a> <a
+                href="<%=request.getContextPath()%>/post/download"
                 class="btn btn-primary">Download</a>
             </div>
             <div class="col-md-4"></div>
