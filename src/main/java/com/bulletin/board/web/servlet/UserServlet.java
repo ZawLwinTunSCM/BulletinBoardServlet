@@ -13,7 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -28,6 +27,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import com.bulletin.board.bl.dto.UserDTO;
 import com.bulletin.board.bl.service.user.UserService;
 import com.bulletin.board.bl.service.user.impl.UserServiceImpl;
+import com.bulletin.board.common.Common;
 import com.bulletin.board.web.form.UserForm;
 
 @WebServlet("/user/*")
@@ -48,13 +48,13 @@ public class UserServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Object role = session.getAttribute("userRole");
         try {
-            if (!isValidRole(role) || isValidRole(role) && Integer.parseInt(role.toString()) != 0) {
-                error403(request, response);
+            if (!Common.isValidRole(role) || Common.isValidRole(role) && Integer.parseInt(role.toString()) != 0) {
+                Common.error403(request, response);
                 return;
             }
             switch (action) {
             case "/new":
-                showNewForm(request, response);
+                Common.forwardToPage("/jsp/user/insert.jsp", request, response);
                 break;
             case "/insert":
                 insertUser(request, response);
@@ -78,13 +78,14 @@ public class UserServlet extends HttpServlet {
                 detailUser(request, response);
                 break;
             case "/passChange":
-                showPassChangeForm(request, response);
+                Common.forwardToPage("/jsp/user/passChange.jsp", request, response);
                 break;
             case "/changePassword":
                 changePassword(request, response);
                 break;
             default:
-                error404(request, response);
+                Common.error404(request, response);
+                break;
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
@@ -97,16 +98,19 @@ public class UserServlet extends HttpServlet {
         doGet(request, response);
     }
 
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        forwardToPage("/jsp/user/insert.jsp", request, response);
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        UserDTO user = userService.doGetUserById(id);
+        request.setAttribute("user", user);
+        Common.forwardToPage("/jsp/user/insert.jsp", request, response);
     }
 
     private void insertUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         UserForm newUser = getUserParameters(request);
         userService.doInsertUser(newUser);
-        redirectToPage("list", response);
+        Common.redirectToPage("list", response);
     }
 
     private void listUsers(HttpServletRequest request, HttpServletResponse response, boolean isSearch)
@@ -129,7 +133,7 @@ public class UserServlet extends HttpServlet {
         request.setAttribute("pageNum", pageNumber);
         request.setAttribute("type", isSearch ? "search" : "list");
         request.setAttribute("total", userService.doGetTotalCount(searchData));
-        forwardToPage("/jsp/user/list.jsp", request, response);
+        Common.forwardToPage("/jsp/user/list.jsp", request, response);
     }
 
     private void detailUser(HttpServletRequest request, HttpServletResponse response)
@@ -137,33 +141,14 @@ public class UserServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         UserDTO user = userService.doGetUserById(id);
         request.setAttribute("user", user);
-        forwardToPage("/jsp/user/detail.jsp", request, response);
-    }
-
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        UserDTO user = userService.doGetUserById(id);
-        request.setAttribute("user", user);
-        forwardToPage("/jsp/user/insert.jsp", request, response);
+        Common.forwardToPage("/jsp/user/detail.jsp", request, response);
     }
 
     private void updateUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         UserForm updatedUser = getUserParameters(request);
         userService.doUpdateUser(updatedUser);
-        redirectToPage("list", response);
-    }
-
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        userService.doDeleteUser(id);
-        redirectToPage("list", response);
-    }
-
-    private void showPassChangeForm(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException {
-        forwardToPage("/jsp/user/passChange.jsp", request, response);
+        Common.redirectToPage("list", response);
     }
 
     private void changePassword(HttpServletRequest request, HttpServletResponse response)
@@ -176,31 +161,26 @@ public class UserServlet extends HttpServlet {
         if (BCrypt.checkpw(oldPass, user.getPassword())) {
             userService.doChangePassword(id, newPass);
             request.setAttribute("successMsg", "Change Password Successfully!");
-            forwardToPage("/jsp/user/passChange.jsp", request, response);
+            Common.forwardToPage("/jsp/user/passChange.jsp", request, response);
         } else {
             request.setAttribute("errorMsg", "Please Enter Correct Old Password!");
-            forwardToPage("/jsp/user/passChange.jsp", request, response);
+            Common.forwardToPage("/jsp/user/passChange.jsp", request, response);
         }
     }
 
-    private void error403(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        forwardToPage("/jsp/error/403.jsp", request, response);
+    private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        userService.doDeleteUser(id);
+        Common.redirectToPage("list", response);
     }
 
-    private void error404(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        forwardToPage("/jsp/error/404.jsp", request, response);
-    }
-
-    private void forwardToPage(String page, HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher(page);
-        dispatcher.forward(request, response);
-    }
-
-    private void redirectToPage(String page, HttpServletResponse response) throws IOException {
-        response.sendRedirect(page);
+    private String getFileName(final Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
     }
 
     private UserForm getUserParameters(HttpServletRequest request) throws IOException, ServletException {
@@ -231,18 +211,5 @@ public class UserServlet extends HttpServlet {
             Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
         }
         return new UserForm(id, fileName, name, email, password, phone, address, role, dob);
-    }
-
-    private String getFileName(final Part part) {
-        for (String content : part.getHeader("content-disposition").split(";")) {
-            if (content.trim().startsWith("filename")) {
-                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
-            }
-        }
-        return null;
-    }
-
-    private boolean isValidRole(Object role) {
-        return !(role == null || role == "");
     }
 }

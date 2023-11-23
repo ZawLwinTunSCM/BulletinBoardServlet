@@ -2,7 +2,6 @@ package com.bulletin.board.web.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +14,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import com.bulletin.board.bl.dto.UserDTO;
 import com.bulletin.board.bl.service.user.UserService;
 import com.bulletin.board.bl.service.user.impl.UserServiceImpl;
+import com.bulletin.board.common.Common;
 
 @WebServlet("/auth/*")
 public class AuthServlet extends HttpServlet {
@@ -39,6 +39,9 @@ public class AuthServlet extends HttpServlet {
         case "/logout":
             logoutAction(request, response);
             break;
+        default:
+            Common.error404(request, response);
+            break;
         }
     }
 
@@ -50,7 +53,7 @@ public class AuthServlet extends HttpServlet {
 
     private void showLoginForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        forwardToPage("/jsp/login.jsp", request, response);
+        Common.forwardToPage("/jsp/login.jsp", request, response);
     }
 
     private void loginAction(HttpServletRequest request, HttpServletResponse response)
@@ -60,7 +63,7 @@ public class AuthServlet extends HttpServlet {
         UserDTO user = userService.doGetUserByEmail(email);
         if (user == null) {
             request.setAttribute("errorMsg", "User does not exist!");
-            forwardToPage("/jsp/login.jsp", request, response);
+            Common.forwardToPage("/jsp/login.jsp", request, response);
         } else {
             if (BCrypt.checkpw(pass, user.getPassword())) {
                 HttpSession session = request.getSession();
@@ -70,7 +73,7 @@ public class AuthServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/post/list");
             } else {
                 request.setAttribute("errorMsg", "Wrong Email or Password!");
-                forwardToPage("/jsp/login.jsp", request, response);
+                Common.forwardToPage("/jsp/login.jsp", request, response);
             }
         }
     }
@@ -79,13 +82,7 @@ public class AuthServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         session.invalidate();
-        request.setAttribute("logoutMsg", "You have logout successful!");
-        forwardToPage("/jsp/login.jsp", request, response);
-    }
-
-    private void forwardToPage(String page, HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher(page);
-        dispatcher.forward(request, response);
+        request.setAttribute("logoutMsg", "You Have Successfully Logged Out!");
+        Common.forwardToPage("/jsp/login.jsp", request, response);
     }
 }

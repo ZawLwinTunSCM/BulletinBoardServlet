@@ -111,7 +111,9 @@
       <p id="colorlib_404_customizer_content">Sorry but the page you
         are looking does not exist, have been removed, name changed or
         is temporarily unavailable.</p>
-      <a href="<%=request.getContextPath()%>/post/list"> Back to HomePage </a>
+      <a
+        href="<%=request.getContextPath()%>${empty sessionScope.userId ? '/auth/loginPage' : '/post/list' }">
+        Go Back </a>
     </div>
   </div>
 </body>

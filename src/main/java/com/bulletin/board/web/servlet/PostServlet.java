@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import com.bulletin.board.bl.dto.PostDTO;
 import com.bulletin.board.bl.service.post.PostService;
 import com.bulletin.board.bl.service.post.impl.PostServiceImpl;
+import com.bulletin.board.common.Common;
 import com.bulletin.board.web.form.PostForm;
 
 @WebServlet("/post/*")
@@ -35,13 +35,13 @@ public class PostServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Object role = session.getAttribute("userRole");
         try {
-            if (!isValidRole(role) || isValidRole(role) && Integer.parseInt(role.toString()) != 0) {
-                error403(request, response);
+            if (!Common.isValidRole(role) || Common.isValidRole(role) && Integer.parseInt(role.toString()) != 0) {
+                Common.error403(request, response);
                 return;
             }
             switch (action) {
             case "/new":
-                showNewForm(request, response);
+                Common.forwardToPage("/jsp/post/insert.jsp", request, response);
                 break;
             case "/insert":
                 insertPost(request, response);
@@ -68,7 +68,8 @@ public class PostServlet extends HttpServlet {
                 exportCSVPost(response);
                 break;
             default:
-                error404(request, response);
+                Common.error404(request, response);
+                break;
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
@@ -81,15 +82,18 @@ public class PostServlet extends HttpServlet {
         doGet(request, response);
     }
 
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        forwardToPage("/jsp/post/insert.jsp", request, response);
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        PostDTO post = postService.doGetPostById(id);
+        request.setAttribute("post", post);
+        Common.forwardToPage("/jsp/post/insert.jsp", request, response);
     }
 
     private void insertPost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         PostForm newPost = getPostParameters(request);
         postService.doInsertPost(newPost);
-        redirectToPage("list", response);
+        Common.redirectToPage("list", response);
     }
 
     private void listPosts(HttpServletRequest request, HttpServletResponse response, boolean isSearch)
@@ -112,7 +116,7 @@ public class PostServlet extends HttpServlet {
         request.setAttribute("pageNum", pageNumber);
         request.setAttribute("type", isSearch ? "search" : "list");
         request.setAttribute("total", postService.doGetTotalCount(searchData));
-        forwardToPage("/jsp/post/list.jsp", request, response);
+        Common.forwardToPage("/jsp/post/list.jsp", request, response);
     }
 
     private void detailPost(HttpServletRequest request, HttpServletResponse response)
@@ -120,42 +124,19 @@ public class PostServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         PostDTO post = postService.doGetPostById(id);
         request.setAttribute("post", post);
-        forwardToPage("/jsp/post/detail.jsp", request, response);
-    }
-
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        PostDTO post = postService.doGetPostById(id);
-        request.setAttribute("post", post);
-        forwardToPage("/jsp/post/insert.jsp", request, response);
+        Common.forwardToPage("/jsp/post/detail.jsp", request, response);
     }
 
     private void updatePost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         PostForm updatedPost = getPostParameters(request);
         postService.doUpdatePost(updatedPost);
-        redirectToPage("list", response);
+        Common.redirectToPage("list", response);
     }
 
     private void deletePost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         postService.doDeletePost(id);
-        redirectToPage("list", response);
-    }
-
-    private void error404(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        forwardToPage("/jsp/error/404.jsp", request, response);
-    }
-
-    private void forwardToPage(String page, HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher(page);
-        dispatcher.forward(request, response);
-    }
-
-    private void redirectToPage(String page, HttpServletResponse response) throws IOException {
-        response.sendRedirect(page);
+        Common.redirectToPage("list", response);
     }
 
     private PostForm getPostParameters(HttpServletRequest request) {
@@ -184,14 +165,5 @@ public class PostServlet extends HttpServlet {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private boolean isValidRole(Object role) {
-        return !(role == null || role == "");
-    }
-
-    private void error403(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        forwardToPage("/jsp/error/403.jsp", request, response);
     }
 }

@@ -218,7 +218,9 @@ a {
   <div class="message">You are not authorized.</div>
   <div class="message2">You tried to access a page you did not
     have prior authorization for.</div>
-  <a href="<%=request.getContextPath()%>/auth/loginPage"> Back to HomePage </a>
+  <a
+    href="<%=request.getContextPath()%>${empty sessionScope.userId ? '/auth/loginPage' : '/post/list' }">
+    Go Back </a>
   <div class="icon">
     <div class="neon">403</div>
     <div class="door-frame">
