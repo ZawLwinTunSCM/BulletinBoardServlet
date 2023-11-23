@@ -32,7 +32,13 @@ public class PostServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getPathInfo();
+        HttpSession session = request.getSession();
+        Object role = session.getAttribute("userRole");
         try {
+            if (!isValidRole(role) || isValidRole(role) && Integer.parseInt(role.toString()) != 0) {
+                error403(request, response);
+                return;
+            }
             switch (action) {
             case "/new":
                 showNewForm(request, response);
@@ -178,5 +184,14 @@ public class PostServlet extends HttpServlet {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isValidRole(Object role) {
+        return !(role == null || role == "");
+    }
+
+    private void error403(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        forwardToPage("/jsp/error/403.jsp", request, response);
     }
 }

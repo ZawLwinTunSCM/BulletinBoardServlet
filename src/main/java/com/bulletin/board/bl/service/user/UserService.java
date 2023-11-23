@@ -12,7 +12,11 @@ public interface UserService {
 
     public UserDTO doGetUserById(int id);
 
+    public UserDTO doGetUserByEmail(String email);
+
     public void doUpdateUser(UserForm user);
+
+    public void doChangePassword(int id, String password);
 
     public void doDeleteUser(int id);
 

@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.bulletin.board.bl.dto.UserDTO;
 import com.bulletin.board.bl.service.user.UserService;
 import com.bulletin.board.bl.service.user.impl.UserServiceImpl;
@@ -46,8 +48,9 @@ public class UserServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Object role = session.getAttribute("userRole");
         try {
-            if (role == null || role == "") {
+            if (!isValidRole(role) || isValidRole(role) && Integer.parseInt(role.toString()) != 0) {
                 error403(request, response);
+                return;
             }
             switch (action) {
             case "/new":
@@ -73,6 +76,12 @@ public class UserServlet extends HttpServlet {
                 break;
             case "/detail":
                 detailUser(request, response);
+                break;
+            case "/passChange":
+                showPassChangeForm(request, response);
+                break;
+            case "/changePassword":
+                changePassword(request, response);
                 break;
             default:
                 error404(request, response);
@@ -152,6 +161,28 @@ public class UserServlet extends HttpServlet {
         redirectToPage("list", response);
     }
 
+    private void showPassChangeForm(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException {
+        forwardToPage("/jsp/user/passChange.jsp", request, response);
+    }
+
+    private void changePassword(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        System.out.println(request.getParameter("id"));
+        int id = Integer.parseInt(request.getParameter("id"));
+        String oldPass = request.getParameter("oldPass");
+        String newPass = request.getParameter("newPass");
+        UserDTO user = userService.doGetUserById(id);
+        if (BCrypt.checkpw(oldPass, user.getPassword())) {
+            userService.doChangePassword(id, newPass);
+            request.setAttribute("successMsg", "Change Password Successfully!");
+            forwardToPage("/jsp/user/passChange.jsp", request, response);
+        } else {
+            request.setAttribute("errorMsg", "Please Enter Correct Old Password!");
+            forwardToPage("/jsp/user/passChange.jsp", request, response);
+        }
+    }
+
     private void error403(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         forwardToPage("/jsp/error/403.jsp", request, response);
@@ -209,5 +240,9 @@ public class UserServlet extends HttpServlet {
             }
         }
         return null;
+    }
+
+    private boolean isValidRole(Object role) {
+        return !(role == null || role == "");
     }
 }

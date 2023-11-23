@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
   pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,17 +33,22 @@
       style="background-color: tomato">
       <div class="container-fluid text-white">
         <a class="navbar-brand" href="#"> MTM Bulletin Board </a>
-        <div class=" d-flex justify-content-between">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a
-              class="nav-link me-5 text-white" href="<%=request.getContextPath()%>/user/list">Users</a></li>
-            <li class="nav-item"><a
-              class="nav-link me-5 text-white"
-              href="<%=request.getContextPath()%>/post/list">Posts</a></li>
-            <li class="nav-item"><a
-              class="nav-link me-5 text-white" href="#">Logout</a></li>
-          </ul>
-        </div>
+        <c:if test="${not empty sessionScope.userName}">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item"><a
+                class="nav-link me-5 text-white"
+                href="<%=request.getContextPath()%>/post/list">Posts</a></li>
+              <li class="nav-item"><a
+                class="nav-link me-5 text-white"
+                href="<%=request.getContextPath()%>/user/list">Users</a></li>
+              <li class="nav-item"><a
+                class="nav-link me-5 text-white"
+                href="<%=request.getContextPath()%>/user/passChange">Password Change</a></li>
+              <li class="nav-item"><a
+                class="nav-link me-5 text-white"
+                href="<%=request.getContextPath()%>/auth/logout">Logout</a></li>
+            </ul>
+        </c:if>
       </div>
     </nav>
   </header>

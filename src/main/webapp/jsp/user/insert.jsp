@@ -10,8 +10,10 @@
   <div
     class="container-fluid flex-grow-1 d-flex align-items-center justify-content-center">
     <div class="card col-md-4">
-      <div class="card-body">
+    <div class="card-header text-center">
         <h2>${user != null ? 'Edit ' : 'Add New '}User</h2>
+    </div>
+      <div class="card-body">
         <form
           action="${pageContext.request.contextPath}/user/${user != null ? 'update' : 'insert'}"
           method="post" enctype="multipart/form-data">

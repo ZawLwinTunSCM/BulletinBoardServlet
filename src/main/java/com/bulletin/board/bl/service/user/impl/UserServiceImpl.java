@@ -42,6 +42,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO doGetUserByEmail(String email) {
+        User user = userDao.dbGetUserByEmail(email);
+        return user == null ? null : new UserDTO(user);
+    }
+
+    @Override
     public void doUpdateUser(UserForm userForm) {
         UserDTO userDTO = new UserDTO(userDao.dbGetUserById(userForm.getId()));
         userDTO.setProfile(userForm.getProfile());
@@ -54,6 +60,11 @@ public class UserServiceImpl implements UserService {
         User user = new User(new UserForm(userDTO));
         user.setUpdatedAt(new Date(System.currentTimeMillis()));
         userDao.dbUpdateUser(user);
+    }
+
+    @Override
+    public void doChangePassword(int id, String password) {
+        userDao.dbChangePassword(id, BCrypt.hashpw(password, BCrypt.gensalt()));
     }
 
     @Override

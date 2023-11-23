@@ -111,7 +111,7 @@
       <p id="colorlib_404_customizer_content">Sorry but the page you
         are looking does not exist, have been removed, name changed or
         is temporarily unavailable.</p>
-      <a href="#"> Back to HomePage </a>
+      <a href="<%=request.getContextPath()%>/post/list"> Back to HomePage </a>
     </div>
   </div>
 </body>

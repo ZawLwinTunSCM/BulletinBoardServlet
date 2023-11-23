@@ -11,7 +11,11 @@ public interface UserDao {
 
     public User dbGetUserById(int id);
 
+    public User dbGetUserByEmail(String email);
+
     public void dbUpdateUser(User user);
+
+    public void dbChangePassword(int id, String password);
 
     public void dbDeleteUser(int id);
 

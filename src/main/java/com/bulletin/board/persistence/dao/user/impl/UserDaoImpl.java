@@ -20,8 +20,10 @@ public class UserDaoImpl implements UserDao {
     private static final String INSERT_USER_SQL = "INSERT INTO user (profile, name, email, password, phone, address, role, dob, created_user_id, updated_user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_ALL_USERS = "SELECT * FROM user LIMIT 10 OFFSET ?";
     private static final String SELECT_USER_BY_ID = "SELECT * FROM user WHERE id = ?";
+    private static final String SELECT_USER_BY_EMAIL = "SELECT * FROM user WHERE email = ?";
     private static final String SEARCH_USERS = "SELECT * FROM user WHERE name LIKE ? OR email LIKE ? LIMIT 10 OFFSET ?";
     private static final String UPDATE_USER_SQL = "UPDATE user SET name = ?, email = ?, phone = ?, address = ?, role = ?, dob = ?,  updated_at = ?, profile = ? WHERE id = ?";
+    private static final String CHANGE_PASSWORD_SQL = "UPDATE user SET password = ?, updated_at = ? WHERE id = ?";
     private static final String DELETE_USER_SQL = "DELETE FROM user WHERE id = ?";
     private static final String COUNT_USERS = "SELECT COUNT(*) as count FROM user";
     private static final String SEARCH_COUNT_USERS = "SELECT COUNT(*) as count FROM user WHERE name LIKE ? OR email LIKE ?";
@@ -124,6 +126,34 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User dbGetUserByEmail(String email) {
+        User user = null;
+        try (Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_EMAIL)) {
+            preparedStatement.setString(1, email);
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = Integer.parseInt(rs.getString("id"));
+                String profile = rs.getString("profile");
+                String name = rs.getString("name");
+                String password = rs.getString("password");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                int role = rs.getInt("role");
+                Date dob = rs.getDate("dob");
+                int createdUserId = rs.getInt("created_user_id");
+                int updatedUserId = rs.getInt("updated_user_id");
+                user = new User(id, profile, name, email, password, phone, address, role, dob, createdUserId,
+                        updatedUserId, null, null);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    @Override
     public void dbUpdateUser(User user) {
         try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(UPDATE_USER_SQL)) {
@@ -136,6 +166,19 @@ public class UserDaoImpl implements UserDao {
             statement.setDate(7, user.getUpdatedAt());
             statement.setString(8, user.getProfile());
             statement.setInt(9, user.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void dbChangePassword(int id, String password) {
+        try (Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(CHANGE_PASSWORD_SQL)) {
+            statement.setString(1, password);
+            statement.setDate(2, new Date(System.currentTimeMillis()));
+            statement.setInt(3, id);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
