@@ -2,6 +2,7 @@
   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ include file="/jsp/common/header.jsp"%>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Post Register</title>
@@ -10,9 +11,9 @@
   <div
     class="container-fluid flex-grow-1 d-flex align-items-center justify-content-center">
     <div class="card col-md-4">
-    <div class="card-header text-center">
+      <div class="card-header text-center">
         <h2>${post != null ? 'Edit ' : 'Add New '}Post</h2>
-    </div>
+      </div>
       <div class="card-body">
         <form
           action="${pageContext.request.contextPath}/post/${post != null ? 'update' : 'insert'}"

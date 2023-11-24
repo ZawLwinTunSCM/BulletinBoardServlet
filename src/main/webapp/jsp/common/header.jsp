@@ -32,7 +32,8 @@
     <nav class="navbar navbar-expand-md navbar-dark"
       style="background-color: tomato">
       <div class="container-fluid text-white">
-        <a class="navbar-brand" href="#"> MTM Bulletin Board </a>
+        <a class="navbar-brand" href="<%=request.getContextPath()%>/">
+          MTM Bulletin Board </a>
         <c:if test="${not empty sessionScope.userName}">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             <li class="nav-item"><a
@@ -46,7 +47,8 @@
               id="navbarDropdown" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">
                 ${sessionScope.userName} </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <ul class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown">
                 <li><a
                   class="me-5 text-dark text-decoration-none dropdown-item"
                   href="<%=request.getContextPath()%>/user/passChange">Password
@@ -56,11 +58,11 @@
                   href="<%=request.getContextPath()%>/auth/logout">Logout</a>
                 </li>
               </ul></li>
-
           </ul>
         </c:if>
       </div>
     </nav>
   </header>
+
 </body>
 </html>

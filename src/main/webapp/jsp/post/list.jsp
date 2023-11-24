@@ -91,17 +91,14 @@
               <c:forEach var="post" items="${listPost}" varStatus="loop">
                 <tr
                   style="vertical-align: middle; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                  <td><c:out value="${loop.count}" /></td>
+                  <td>${loop.count}</td>
                   <td class="text-truncate"><a
-                    href="<%=request.getContextPath()%>/post/detail?id=${post.id}"><c:out
-                        value="${post.title}" /></a></td>
-                  <td class="text-truncate"><c:out
-                      value="${post.description}" /></td>
-                  <td class="text-truncate"><c:out
-                      value="${post.author}" /></td>
-                  <td><c:out value="${post.createdAt}" /></td>
+                    href="<%=request.getContextPath()%>/post/detail?id=${post.id}">${post.title}</a></td>
+                  <td class="text-truncate">${post.description}</td>
+                  <td class="text-truncate">${post.author}</td>
+                  <td>${post.createdAt}</td>
                   <td class="d-flex justify-content-between"><a
-                    href="edit?id=<c:out value='${post.id}'/>"
+                    href="edit?id=${post.id}"
                     class="btn col-5 ms-2 ${sessionScope.userRole ==0 || sessionScope.userId == post.createdUserId ? 'btn-primary':'btn-secondary disabled'}">Edit</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <button type="button" data-bs-toggle="modal"

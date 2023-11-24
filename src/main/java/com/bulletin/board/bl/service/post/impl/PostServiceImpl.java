@@ -1,8 +1,8 @@
 package com.bulletin.board.bl.service.post.impl;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.bulletin.board.bl.dto.PostDTO;
 import com.bulletin.board.bl.service.post.PostService;
@@ -22,26 +22,20 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostDTO> doGetAllPosts(int id, String searchData, int pageNumber) {
-        List<PostDTO> postDTOs = new ArrayList<PostDTO>();
-        List<Post> posts = postDao.dbGetAllPosts(id, searchData, pageNumber);
-        for (int i = 0; i < posts.size(); i++) {
-            PostDTO postDTO = new PostDTO(posts.get(i));
+        return postDao.dbGetAllPosts(id, searchData, pageNumber).stream().map(post -> {
+            PostDTO postDTO = new PostDTO(post);
             postDTO.setAuthor(postDao.dbGetAuthor(postDTO.getCreatedUserId()));
-            postDTOs.add(postDTO);
-        }
-        return postDTOs;
+            return postDTO;
+        }).collect(Collectors.toList());
     }
 
     @Override
-    public List<PostDTO> doGetPosts() {
-        List<PostDTO> postDTOs = new ArrayList<PostDTO>();
-        List<Post> posts = postDao.dbGetPosts();
-        for (int i = 0; i < posts.size(); i++) {
-            PostDTO postDTO = new PostDTO(posts.get(i));
+    public List<PostDTO> doGetPosts(int id) {
+        return postDao.dbGetPosts(id).stream().map(post -> {
+            PostDTO postDTO = new PostDTO(post);
             postDTO.setAuthor(postDao.dbGetAuthor(postDTO.getCreatedUserId()));
-            postDTOs.add(postDTO);
-        }
-        return postDTOs;
+            return postDTO;
+        }).collect(Collectors.toList());
     }
 
     @Override

@@ -46,7 +46,7 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getPathInfo();
         HttpSession session = request.getSession();
-        Object role = session.getAttribute("userRole");
+        Object role = session.getAttribute(Common.SESSION_USER_ROLE);
         try {
             if (!Common.isValidRole(role)) {
                 Common.error403(request, response);
@@ -54,7 +54,7 @@ public class UserServlet extends HttpServlet {
             }
             switch (action) {
             case "/new":
-                Common.forwardToPage("/jsp/user/insert.jsp", request, response);
+                Common.forwardToPage(Common.USER_INSERT_JSP, request, response);
                 break;
             case "/insert":
                 insertUser(request, response);
@@ -78,7 +78,7 @@ public class UserServlet extends HttpServlet {
                 detailUser(request, response);
                 break;
             case "/passChange":
-                Common.forwardToPage("/jsp/user/passChange.jsp", request, response);
+                Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
                 break;
             case "/changePassword":
                 changePassword(request, response);
@@ -104,13 +104,10 @@ public class UserServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         UserDTO user = userService.doGetUserById(id);
         int loginId = Common.getLoginUserId(request);
-        System.out.println(Common.isValidRole(role));
-        System.out.println(Integer.parseInt(role.toString()) == 0);
-        System.out.println(user != null && user.getId() == loginId);
         if (Common.isValidRole(role)
                 && (Integer.parseInt(role.toString()) == 0 || (user != null && user.getId() == loginId))) {
             request.setAttribute("user", user);
-            Common.forwardToPage("/jsp/user/insert.jsp", request, response);
+            Common.forwardToPage(Common.USER_INSERT_JSP, request, response);
         } else {
             Common.error403(request, response);
         }
@@ -131,13 +128,13 @@ public class UserServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String searchData = request.getParameter("searchData");
         String pageNum = request.getParameter("pageNumber");
-        int pageNumber = pageNum == null || pageNum == "" ? 1 : Integer.parseInt(pageNum);
+        int pageNumber = Common.isDataNullOrEmpty(pageNum) ? 1 : Integer.parseInt(pageNum);
         if (pageNumber == 1 && isSearch && searchData != null) {
-            session.setAttribute("searchData", searchData);
+            session.setAttribute(Common.SESSION_SEARCH_DATA, searchData);
         }
         if (isSearch) {
-            if (searchData == null) {
-                searchData = session.getAttribute("searchData").toString();
+            if (Common.isDataNullOrEmpty(searchData)) {
+                searchData = session.getAttribute(Common.SESSION_SEARCH_DATA).toString();
             }
         }
         List<UserDTO> users = userService.doGetAllUsers(searchData, pageNumber);
@@ -146,7 +143,7 @@ public class UserServlet extends HttpServlet {
         request.setAttribute("pageNum", pageNumber);
         request.setAttribute("type", isSearch ? "search" : "list");
         request.setAttribute("total", userService.doGetTotalCount(searchData));
-        Common.forwardToPage("/jsp/user/list.jsp", request, response);
+        Common.forwardToPage(Common.USER_LIST_URL, request, response);
     }
 
     private void detailUser(HttpServletRequest request, HttpServletResponse response)
@@ -154,7 +151,7 @@ public class UserServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         UserDTO user = userService.doGetUserById(id);
         request.setAttribute("user", user);
-        Common.forwardToPage("/jsp/user/detail.jsp", request, response);
+        Common.forwardToPage(Common.USER_DETAIL_URL, request, response);
     }
 
     private void updateUser(HttpServletRequest request, HttpServletResponse response)
@@ -166,7 +163,6 @@ public class UserServlet extends HttpServlet {
 
     private void changePassword(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        System.out.println(request.getParameter("id"));
         int id = Integer.parseInt(request.getParameter("id"));
         String oldPass = request.getParameter("oldPass");
         String newPass = request.getParameter("newPass");
@@ -174,10 +170,10 @@ public class UserServlet extends HttpServlet {
         if (BCrypt.checkpw(oldPass, user.getPassword())) {
             userService.doChangePassword(id, newPass);
             request.setAttribute("successMsg", "Change Password Successfully!");
-            Common.forwardToPage("/jsp/user/passChange.jsp", request, response);
+            Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
         } else {
             request.setAttribute("errorMsg", "Please Enter Correct Old Password!");
-            Common.forwardToPage("/jsp/user/passChange.jsp", request, response);
+            Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
         }
     }
 

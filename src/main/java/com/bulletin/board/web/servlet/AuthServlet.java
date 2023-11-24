@@ -19,6 +19,7 @@ import com.bulletin.board.common.Common;
 @WebServlet("/auth/*")
 public class AuthServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
     private final UserService userService = new UserServiceImpl();
 
     public AuthServlet() {
@@ -31,7 +32,7 @@ public class AuthServlet extends HttpServlet {
         String action = request.getPathInfo();
         switch (action) {
         case "/loginPage":
-            showLoginForm(request, response);
+            Common.forwardToPage(Common.LOGIN_JSP, request, response);
             break;
         case "/login":
             loginAction(request, response);
@@ -51,11 +52,6 @@ public class AuthServlet extends HttpServlet {
         doGet(request, response);
     }
 
-    private void showLoginForm(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Common.forwardToPage("/jsp/login.jsp", request, response);
-    }
-
     private void loginAction(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
@@ -63,17 +59,17 @@ public class AuthServlet extends HttpServlet {
         UserDTO user = userService.doGetUserByEmail(email);
         if (user == null) {
             request.setAttribute("errorMsg", "User does not exist!");
-            Common.forwardToPage("/jsp/login.jsp", request, response);
+            Common.forwardToPage(Common.LOGIN_JSP, request, response);
         } else {
             if (BCrypt.checkpw(pass, user.getPassword())) {
                 HttpSession session = request.getSession();
-                session.setAttribute("userId", user.getId());
-                session.setAttribute("userName", user.getName());
-                session.setAttribute("userRole", user.getRole());
-                response.sendRedirect(request.getContextPath() + "/post/list");
+                session.setAttribute(Common.SESSION_USER_ID, user.getId());
+                session.setAttribute(Common.SESSION_USER_NAME, user.getName());
+                session.setAttribute(Common.SESSION_USER_ROLE, user.getRole());
+                response.sendRedirect(request.getContextPath() + Common.LOGIN_POST_LIST_URL);
             } else {
                 request.setAttribute("errorMsg", "Wrong Email or Password!");
-                Common.forwardToPage("/jsp/login.jsp", request, response);
+                Common.forwardToPage(Common.LOGIN_JSP, request, response);
             }
         }
     }
@@ -83,6 +79,6 @@ public class AuthServlet extends HttpServlet {
         HttpSession session = request.getSession();
         session.invalidate();
         request.setAttribute("logoutMsg", "You Have Successfully Logged Out!");
-        Common.forwardToPage("/jsp/login.jsp", request, response);
+        Common.forwardToPage(Common.LOGIN_JSP, request, response);
     }
 }

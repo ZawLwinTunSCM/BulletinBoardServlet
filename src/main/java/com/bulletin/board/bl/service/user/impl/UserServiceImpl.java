@@ -1,8 +1,8 @@
 package com.bulletin.board.bl.service.user.impl;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -25,13 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> doGetAllUsers(String searchData, int pageNumber) {
-        List<UserDTO> userDTOs = new ArrayList<UserDTO>();
-        List<User> users = userDao.dbGetAllUsers(searchData, pageNumber);
-        for (int i = 0; i < users.size(); i++) {
-            UserDTO userDTO = new UserDTO(users.get(i));
-            userDTOs.add(userDTO);
-        }
-        return userDTOs;
+        return userDao.dbGetAllUsers(searchData, pageNumber).stream().map(UserDTO::new).collect(Collectors.toList());
     }
 
     @Override

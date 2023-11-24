@@ -44,7 +44,7 @@ public class PostServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getPathInfo();
         HttpSession session = request.getSession();
-        Object role = session.getAttribute("userRole");
+        Object role = session.getAttribute(Common.SESSION_USER_ROLE);
         try {
             if (!Common.isValidRole(role)) {
                 Common.error403(request, response);
@@ -52,7 +52,7 @@ public class PostServlet extends HttpServlet {
             }
             switch (action) {
             case "/new":
-                Common.forwardToPage("/jsp/post/insert.jsp", request, response);
+                Common.forwardToPage(Common.POST_INSERT_JSP, request, response);
                 break;
             case "/insert":
                 insertPost(request, response);
@@ -76,13 +76,13 @@ public class PostServlet extends HttpServlet {
                 detailPost(request, response);
                 break;
             case "/download":
-                exportCSVPost(response);
+                exportCSVPost(request, response);
                 break;
             case "/downloadTemplate":
                 downloadTemplate(request, response);
                 break;
             case "/upload":
-                Common.forwardToPage("/jsp/post/upload.jsp", request, response);
+                Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
                 break;
             case "/uploadPost":
                 uploadPost(request, response);
@@ -104,7 +104,6 @@ public class PostServlet extends HttpServlet {
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-
         Object role = Common.getLoginUserRole(request);
         int id = Integer.parseInt(request.getParameter("id"));
         PostDTO post = postService.doGetPostById(id);
@@ -112,7 +111,7 @@ public class PostServlet extends HttpServlet {
         if (Common.isValidRole(role)
                 && (Integer.parseInt(role.toString()) == 0 || (post != null && post.getCreatedUserId() == loginId))) {
             request.setAttribute("post", post);
-            Common.forwardToPage("/jsp/post/insert.jsp", request, response);
+            Common.forwardToPage(Common.POST_INSERT_JSP, request, response);
         } else {
             Common.error403(request, response);
         }
@@ -132,13 +131,13 @@ public class PostServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String searchData = request.getParameter("searchData");
         String pageNum = request.getParameter("pageNumber");
-        int pageNumber = pageNum == null || pageNum == "" ? 1 : Integer.parseInt(pageNum);
+        int pageNumber = Common.isDataNullOrEmpty(pageNum) ? 1 : Integer.parseInt(pageNum);
         if (pageNumber == 1 && isSearch && searchData != null) {
-            session.setAttribute("search", searchData);
+            session.setAttribute(Common.SESSION_SEARCH_DATA, searchData);
         }
         if (isSearch) {
-            if (searchData == null) {
-                searchData = session.getAttribute("search").toString();
+            if (Common.isDataNullOrEmpty(searchData)) {
+                searchData = session.getAttribute(Common.SESSION_SEARCH_DATA).toString();
             }
         }
         int id = Common.getLoginUserId(request);
@@ -148,7 +147,7 @@ public class PostServlet extends HttpServlet {
         request.setAttribute("pageNum", pageNumber);
         request.setAttribute("type", isSearch ? "search" : "list");
         request.setAttribute("total", postService.doGetTotalCount(id, searchData));
-        Common.forwardToPage("/jsp/post/list.jsp", request, response);
+        Common.forwardToPage(Common.POST_LIST_URL, request, response);
     }
 
     private void detailPost(HttpServletRequest request, HttpServletResponse response)
@@ -156,7 +155,7 @@ public class PostServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         PostDTO post = postService.doGetPostById(id);
         request.setAttribute("post", post);
-        Common.forwardToPage("/jsp/post/detail.jsp", request, response);
+        Common.forwardToPage(Common.POST_DETAIL_URL, request, response);
     }
 
     private void updatePost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
@@ -181,8 +180,8 @@ public class PostServlet extends HttpServlet {
         return new PostForm(id, title, description, status, id, id);
     }
 
-    private void exportCSVPost(HttpServletResponse response) {
-        List<PostDTO> posts = postService.doGetPosts();
+    private void exportCSVPost(HttpServletRequest request, HttpServletResponse response) {
+        List<PostDTO> posts = postService.doGetPosts(Common.getLoginUserId(request));
         StringBuilder csvData = new StringBuilder();
         csvData.append("ID, Title, Description, Author, Status, Posted Date\n");
         for (int i = 0; i < posts.size(); i++) {
@@ -220,7 +219,6 @@ public class PostServlet extends HttpServlet {
         InputStream input = filePart.getInputStream();
         CSVReader csvReader = new CSVReader(new InputStreamReader(input));
         List<String[]> allData = csvReader.readAll();
-
         for (int i = 1; i < allData.size(); i++) {
             PostForm newPost = createPostFromCSVData(allData.get(i), request, response, i);
             if (newPost == null) {
@@ -230,28 +228,24 @@ public class PostServlet extends HttpServlet {
             newPost.setUpdatedUserId(id);
             posts.add(newPost);
         }
-
         for (PostForm post : posts) {
             postService.doInsertPost(post);
         }
-
         request.setAttribute("successMsg", "Data are Successfully Uploaded!");
-        Common.forwardToPage("/jsp/post/upload.jsp", request, response);
+        Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
     }
 
     private PostForm createPostFromCSVData(String[] post, HttpServletRequest request, HttpServletResponse response,
             int row) throws IOException, ServletException {
         PostForm newPost = new PostForm();
-
         for (int j = 0; j < post.length; j++) {
-            if (dataValidation(post[j])) {
+            if (Common.isDataNullOrEmpty(post[j])) {
                 request.setAttribute("errorMsg", "Data is missing at row : " + (row + 1) + " column : " + (j + 1));
-                Common.forwardToPage("/jsp/post/upload.jsp", request, response);
+                Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
                 return null;
             }
             setPostField(newPost, j, post[j]);
         }
-
         return newPost;
     }
 
@@ -267,9 +261,5 @@ public class PostServlet extends HttpServlet {
             newPost.setStatus(Integer.parseInt(data));
             break;
         }
-    }
-
-    private boolean dataValidation(String data) {
-        return (data == null || data.isEmpty());
     }
 }

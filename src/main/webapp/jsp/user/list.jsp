@@ -26,7 +26,7 @@
           <div class="row mt-3">
             <div class="col-md-4 d-flex justify-content-between">
               <a href="<%=request.getContextPath()%>/user/new"
-                class="btn btn-primary">Add New User</a> 
+                class="btn btn-primary">Add New User</a>
             </div>
             <div class="col-md-4"></div>
             <form class="col-md-4 d-flex"
@@ -43,9 +43,9 @@
         </div>
       </c:when>
       <c:when test="${not empty listUser}">
-      <input type="hidden" id="total" value="${total}">
-      <input type="hidden" id="pageNum" value="${pageNum}">
-      <input type="hidden" id="type" value="${type}">
+        <input type="hidden" id="total" value="${total}">
+        <input type="hidden" id="pageNum" value="${pageNum}">
+        <input type="hidden" id="type" value="${type}">
         <div class="col-md-8">
           <h3 class="text-center">List of Users</h3>
           <hr>
@@ -82,19 +82,16 @@
               <c:forEach var="user" items="${listUser}" varStatus="loop">
                 <tr
                   style="vertical-align: middle; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                  <td><c:out value="${loop.count}" /></td>
+                  <td>${loop.count}</td>
                   <td class="text-truncate"><a
-                    href="<%=request.getContextPath()%>/user/detail?id=${user.id}"><c:out
-                        value="${user.name}" /></a></td>
-                  <td class="text-truncate"><c:out
-                      value="${user.email}" /></td>
-                  <td class="text-truncate"><c:out
-                      value="${user.phone}" /></td>
-                  <td><c:out
-                      value="${user.dob}" /></td>
-                  <td><c:out value="${user.role == 0 ? 'Admin' : 'User'}" /></td>
+                    href="<%=request.getContextPath()%>/user/detail?id=${user.id}">
+                      ${user.name}</a></td>
+                  <td class="text-truncate">${user.email}</td>
+                  <td class="text-truncate">${user.phone}</td>
+                  <td>${user.dob}</td>
+                  <td>${user.role == 0 ? 'Admin' : 'User'}</td>
                   <td class="d-flex justify-content-between"><a
-                    href="edit?id=<c:out value='${user.id}'/>"
+                    href="edit?id=${user.id}"
                     class="btn col-5 ms-2 ${sessionScope.userRole ==0 || sessionScope.userId == user.id ? 'btn-primary':'btn-secondary disabled'}">Edit</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <button type="button" data-bs-toggle="modal"

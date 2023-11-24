@@ -10,9 +10,26 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 public class Common {
+    public static final String SESSION_USER_ID = "userId";
+    public static final String SESSION_USER_NAME = "userName";
+    public static final String SESSION_USER_ROLE = "userRole";
+    public static final String SESSION_SEARCH_DATA = "search";
+
+    public static final String LOGIN_JSP = "/jsp/login.jsp";
+    public static final String LOGIN_POST_LIST_URL = "/post/list";
+
+    public static final String POST_INSERT_JSP = "/jsp/post/insert.jsp";
+    public static final String POST_LIST_URL = "/jsp/post/list.jsp";
+    public static final String POST_UPLOAD_URL = "/jsp/post/upload.jsp";
+    public static final String POST_DETAIL_URL = "/jsp/post/detail.jsp";
+
+    public static final String USER_INSERT_JSP = "/jsp/user/insert.jsp";
+    public static final String USER_LIST_URL = "/jsp/user/list.jsp";
+    public static final String USER_DETAIL_URL = "/jsp/user/detail.jsp";
+    public static final String USER_PASS_CHANGE_URL = "/jsp/user/passChange.jsp";
 
     public static boolean isValidRole(Object role) {
-        return !(role == null || role == "");
+        return role != null && !"".equals(role);
     }
 
     public static void forwardToPage(String page, HttpServletRequest request, HttpServletResponse response)
@@ -43,6 +60,10 @@ public class Common {
     public static int getLoginUserRole(HttpServletRequest request) {
         HttpSession session = request.getSession();
         return Integer.parseInt(session.getAttribute("userRole").toString());
+    }
+
+    public static boolean isDataNullOrEmpty(String data) {
+        return data == null || data.isEmpty();
     }
 
     public static String getFileName(final Part part) {

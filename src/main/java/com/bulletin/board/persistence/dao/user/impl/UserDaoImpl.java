@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bulletin.board.common.Common;
 import com.bulletin.board.persistence.dao.user.UserDao;
 import com.bulletin.board.persistence.entity.User;
 
@@ -39,7 +40,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void dbInsertUser(User user) {
-        System.out.println(INSERT_USER_SQL);
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_SQL)) {
             preparedStatement.setString(1, user.getProfile());
@@ -54,7 +54,6 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.setInt(10, user.getUpdatedUserId());
             preparedStatement.setDate(11, new Date(System.currentTimeMillis()));
             preparedStatement.setDate(12, new Date(System.currentTimeMillis()));
-            System.out.println(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,7 +62,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> dbGetAllUsers(String searchData, int pageNumber) {
-        boolean isAllUser = searchData == null || searchData == "";
+        boolean isAllUser = Common.isDataNullOrEmpty(searchData);
         List<User> users = new ArrayList<>();
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection
@@ -103,7 +102,6 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_ID)) {
             preparedStatement.setInt(1, id);
-            System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 String profile = rs.getString("profile");
@@ -131,7 +129,6 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_EMAIL)) {
             preparedStatement.setString(1, email);
-            System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 int id = Integer.parseInt(rs.getString("id"));
@@ -198,7 +195,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public int dbGetTotalCount(String searchData) {
-        boolean isAllUser = searchData == null || searchData == "";
+        boolean isAllUser = Common.isDataNullOrEmpty(searchData);
         int count = 0;
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection

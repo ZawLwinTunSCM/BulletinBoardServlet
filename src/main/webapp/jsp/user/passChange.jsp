@@ -2,6 +2,7 @@
   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ include file="/jsp/common/header.jsp"%>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Login</title>
@@ -23,7 +24,7 @@
         <form
           action="${pageContext.request.contextPath}/user/changePassword"
           method="post">
-        <input type="hidden" name="id" value="${sessionScope.userId}" />
+          <input type="hidden" name="id" value="${sessionScope.userId}" />
 
           <fieldset class="form-group mb-3">
             <label class="fw-medium" for="title">Old Password</label> <input

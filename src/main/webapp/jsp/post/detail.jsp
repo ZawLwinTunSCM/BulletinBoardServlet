@@ -2,6 +2,7 @@
   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ include file="/jsp/common/header.jsp"%>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Post Detail</title>
@@ -42,7 +43,7 @@
       <div class="card-footer text-center">
         <c:if
           test="${sessionScope.userRole ==0 || sessionScope.userId == post.createdUserId}">
-          <a href="edit?id=<c:out value='${post.id}'/>"
+          <a href="edit?id=${post.id}"
             class="btn btn-primary col-2 mx-3">Edit</a>
         </c:if>
         <a href="<%=request.getContextPath()%>/post/list"

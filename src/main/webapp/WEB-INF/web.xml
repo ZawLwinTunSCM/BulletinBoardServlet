@@ -4,10 +4,12 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
     version="4.0">
     <display-name>ServletBulletinBoard</display-name>
+    
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/resources/*</url-pattern>
     </servlet-mapping>
+    
     <error-page>
         <error-code>500</error-code>
         <location>/jsp/error/500.jsp</location>

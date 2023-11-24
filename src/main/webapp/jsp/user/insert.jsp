@@ -2,6 +2,7 @@
   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ include file="/jsp/common/header.jsp"%>
+<!DOCTYPE html>
 <html>
 <head>
 <title>User Register</title>
@@ -10,9 +11,9 @@
   <div
     class="container-fluid flex-grow-1 d-flex align-items-center justify-content-center">
     <div class="card col-md-4">
-    <div class="card-header text-center">
+      <div class="card-header text-center">
         <h2>${user != null ? 'Edit ' : 'Add New '}User</h2>
-    </div>
+      </div>
       <div class="card-body">
         <form
           action="${pageContext.request.contextPath}/user/${user != null ? 'update' : 'insert'}"
@@ -32,7 +33,6 @@
             <label class="fw-medium" for="name">Profile</label> <input
               type="file" class="form-control" id="profile"
               accept="image/*" onchange="previewImage()" name="profile"
-              value="${user.profile}"
               ${user.profile ==null ? 'required': ''} />
           </fieldset>
 
@@ -95,6 +95,7 @@
             <a href="<%=request.getContextPath()%>/user/list"
               class="btn btn-dark col-2 mx-2">Back</a>
           </div>
+
         </form>
       </div>
     </div>

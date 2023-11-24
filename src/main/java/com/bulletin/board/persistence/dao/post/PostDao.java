@@ -9,7 +9,7 @@ public interface PostDao {
 
     public List<Post> dbGetAllPosts(int id, String searchData, int pageNumber);
 
-    public List<Post> dbGetPosts();
+    public List<Post> dbGetPosts(int id);
 
     public Post dbGetPostById(int id);
 
