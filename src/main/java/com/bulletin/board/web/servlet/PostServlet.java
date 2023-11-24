@@ -28,17 +28,55 @@ import com.bulletin.board.common.Common;
 import com.bulletin.board.web.form.PostForm;
 import com.opencsv.CSVReader;
 
+/**
+ * <h2>PostServlet Class</h2>
+ * <p>
+ * Process for Displaying PostServlet
+ * </p>
+ * 
+ * @author ZawLwinTun
+ *
+ */
 @MultipartConfig
 @WebServlet("/post/*")
 public class PostServlet extends HttpServlet {
+    /**
+     * <h2>serialVersionUID</h2>
+     * <p>
+     * serialVersionUID
+     * </p>
+     */
     private static final long serialVersionUID = 1L;
+    /**
+     * <h2>postService</h2>
+     * <p>
+     * postService
+     * </p>
+     */
     private final PostService postService;
 
+    /**
+     * <h2>Constructor for PostServlet</h2>
+     * <p>
+     * Constructor for PostServlet
+     * </p>
+     */
     public PostServlet() {
         super();
         this.postService = new PostServiceImpl();
     }
 
+    /**
+     * <h2>doGet</h2>
+     * <p>
+     * Get Method
+     * </p>
+     * 
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -96,12 +134,36 @@ public class PostServlet extends HttpServlet {
         }
     }
 
+    /**
+     * <h2>doPost</h2>
+     * <p>
+     * Post Method
+     * </p>
+     * 
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
     }
 
+    /**
+     * <h2>showEditForm</h2>
+     * <p>
+     * Forward to Post Edit Page
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws SQLException
+     * @throws ServletException
+     * @throws IOException
+     * @return void
+     */
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         Object role = Common.getLoginUserRole(request);
@@ -117,6 +179,18 @@ public class PostServlet extends HttpServlet {
         }
     }
 
+    /**
+     * <h2>insertPost</h2>
+     * <p>
+     * Insert Post
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponses
+     * @throws SQLException
+     * @throws IOException
+     * @return void
+     */
     private void insertPost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         PostForm newPost = getPostParameters(request);
         int id = Common.getLoginUserId(request);
@@ -126,6 +200,20 @@ public class PostServlet extends HttpServlet {
         Common.redirectToPage("list", response);
     }
 
+    /**
+     * <h2>listPosts</h2>
+     * <p>
+     * Show Lists of Posts with LIMIT
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @param isSearch
+     * @throws SQLException
+     * @throws IOException
+     * @throws ServletException
+     * @return void
+     */
     private void listPosts(HttpServletRequest request, HttpServletResponse response, boolean isSearch)
             throws SQLException, IOException, ServletException {
         HttpSession session = request.getSession();
@@ -150,6 +238,19 @@ public class PostServlet extends HttpServlet {
         Common.forwardToPage(Common.POST_LIST_URL, request, response);
     }
 
+    /**
+     * <h2>detailPost</h2>
+     * <p>
+     * Forward to Post Detail Page
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws SQLException
+     * @throws IOException
+     * @throws ServletException
+     * @return void
+     */
     private void detailPost(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -158,6 +259,18 @@ public class PostServlet extends HttpServlet {
         Common.forwardToPage(Common.POST_DETAIL_URL, request, response);
     }
 
+    /**
+     * <h2>updatePost</h2>
+     * <p>
+     * Update Post
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws SQLException
+     * @throws IOException
+     * @return void
+     */
     private void updatePost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         PostForm updatedPost = getPostParameters(request);
         updatedPost.setUpdatedUserId(Common.getLoginUserId(request));
@@ -165,12 +278,33 @@ public class PostServlet extends HttpServlet {
         Common.redirectToPage("list", response);
     }
 
+    /**
+     * <h2>deletePost</h2>
+     * <p>
+     * Delete Post
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws SQLException
+     * @throws IOException
+     * @return void
+     */
     private void deletePost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         postService.doDeletePost(id);
         Common.redirectToPage("list", response);
     }
 
+    /**
+     * <h2>getPostParameters</h2>
+     * <p>
+     * Get the Parameters of Post from JSP
+     * </p>
+     *
+     * @param request HttpServletRequest
+     * @return PostForm
+     */
     private PostForm getPostParameters(HttpServletRequest request) {
         String idParam = request.getParameter("id");
         int id = (idParam != null && !idParam.isEmpty()) ? Integer.parseInt(idParam) : 0;
@@ -180,6 +314,16 @@ public class PostServlet extends HttpServlet {
         return new PostForm(id, title, description, status, id, id);
     }
 
+    /**
+     * <h2>exportCSVPost</h2>
+     * <p>
+     * Export CSV Post Data
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @return void
+     */
     private void exportCSVPost(HttpServletRequest request, HttpServletResponse response) {
         List<PostDTO> posts = postService.doGetPosts(Common.getLoginUserId(request));
         StringBuilder csvData = new StringBuilder();
@@ -199,6 +343,17 @@ public class PostServlet extends HttpServlet {
         }
     }
 
+    /**
+     * <h2>downloadTemplate</h2>
+     * <p>
+     * Download Post Upload Tempate
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException
+     * @return void
+     */
     private void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Path path = Paths.get(request.getServletContext().getRealPath("/") + "resources" + File.separator + "template"
                 + File.separator + "template.csv");
@@ -211,6 +366,18 @@ public class PostServlet extends HttpServlet {
         }
     }
 
+    /**
+     * <h2>uploadPost</h2>
+     * <p>
+     * Upload Posts
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException
+     * @throws ServletException
+     * @return void
+     */
     private void uploadPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         List<PostForm> posts = new ArrayList<>();
@@ -235,6 +402,20 @@ public class PostServlet extends HttpServlet {
         Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
     }
 
+    /**
+     * <h2>createPostFromCSVData</h2>
+     * <p>
+     * Create Post Object from CSV Data
+     * </p>
+     *
+     * @param post     String[]
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @param row      int
+     * @throws IOException
+     * @throws ServletException
+     * @return PostForm
+     */
     private PostForm createPostFromCSVData(String[] post, HttpServletRequest request, HttpServletResponse response,
             int row) throws IOException, ServletException {
         PostForm newPost = new PostForm();
@@ -249,6 +430,17 @@ public class PostServlet extends HttpServlet {
         return newPost;
     }
 
+    /**
+     * <h2>setPostField</h2>
+     * <p>
+     * Set the Post Data
+     * </p>
+     *
+     * @param newPost     PostForm
+     * @param columnIndex int
+     * @param data        String
+     * @return void
+     */
     private void setPostField(PostForm newPost, int columnIndex, String data) {
         switch (columnIndex) {
         case 0:

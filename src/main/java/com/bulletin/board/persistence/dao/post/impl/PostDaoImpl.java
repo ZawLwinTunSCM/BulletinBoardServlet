@@ -13,22 +13,118 @@ import com.bulletin.board.common.Common;
 import com.bulletin.board.persistence.dao.post.PostDao;
 import com.bulletin.board.persistence.entity.Post;
 
+/**
+ * <h2>PostDaoImpl Class</h2>
+ * <p>
+ * Process for Displaying PostDaoImpl
+ * </p>
+ * 
+ * @author ZawLwinTun
+ *
+ */
 public class PostDaoImpl implements PostDao {
+    /**
+     * <h2>JDBC_URL</h2>
+     * <p>
+     * JDBC_URL
+     * </p>
+     */
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/bulletin?useSSL=false";
+    /**
+     * <h2>JDBC_USERNAME</h2>
+     * <p>
+     * JDBC_USERNAME
+     * </p>
+     */
     private static final String JDBC_USERNAME = "root";
+    /**
+     * <h2>JDBC_PASSWORD</h2>
+     * <p>
+     * JDBC_PASSWORD
+     * </p>
+     */
     private static final String JDBC_PASSWORD = "root";
 
+    /**
+     * <h2>INSERT_POST_SQL</h2>
+     * <p>
+     * INSERT_POST_SQL
+     * </p>
+     */
     private static final String INSERT_POST_SQL = "INSERT INTO post (title, description, status, created_user_id, updated_user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    /**
+     * <h2>SELECT_ALL_POSTS</h2>
+     * <p>
+     * SELECT_ALL_POSTS
+     * </p>
+     */
     private static final String SELECT_ALL_POSTS = "SELECT * FROM post WHERE created_user_id = ? OR status = 1 LIMIT 10 OFFSET ?";
+    /**
+     * <h2>SELECT_POSTS</h2>
+     * <p>
+     * SELECT_POSTS
+     * </p>
+     */
     private static final String SELECT_POSTS = "SELECT * FROM post WHERE created_user_id = ? OR status = 1";
+    /**
+     * <h2>SELECT_POST_BY_ID</h2>
+     * <p>
+     * SELECT_POST_BY_ID
+     * </p>
+     */
     private static final String SELECT_POST_BY_ID = "SELECT * FROM post WHERE id = ?";
+    /**
+     * <h2>SEARCH_POSTS</h2>
+     * <p>
+     * SEARCH_POSTS
+     * </p>
+     */
     private static final String SEARCH_POSTS = "SELECT * FROM post WHERE (created_user_id = ? OR status = 1) AND (title LIKE ? OR description LIKE ?) LIMIT 10 OFFSET ?";
+    /**
+     * <h2>UPDATE_POST_SQL</h2>
+     * <p>
+     * UPDATE_POST_SQL
+     * </p>
+     */
     private static final String UPDATE_POST_SQL = "UPDATE post SET title = ?, description = ?, status = ?, updated_user_id=?, updated_at=? WHERE id = ?";
+    /**
+     * <h2>DELETE_POST_SQL</h2>
+     * <p>
+     * DELETE_POST_SQL
+     * </p>
+     */
     private static final String DELETE_POST_SQL = "DELETE FROM post WHERE id = ?";
+    /**
+     * <h2>COUNT_POSTS</h2>
+     * <p>
+     * COUNT_POSTS
+     * </p>
+     */
     private static final String COUNT_POSTS = "SELECT COUNT(*) as count FROM post WHERE created_user_id = ? OR status = 1";
+    /**
+     * <h2>SEARCH_COUNT_POSTS</h2>
+     * <p>
+     * SEARCH_COUNT_POSTS
+     * </p>
+     */
     private static final String SEARCH_COUNT_POSTS = "SELECT COUNT(*) as count FROM post WHERE (created_user_id = ? OR status = 1) AND (title LIKE ? OR description LIKE ?)";
+    /**
+     * <h2>GET_AUTHOR</h2>
+     * <p>
+     * GET_AUTHOR
+     * </p>
+     */
     private static final String GET_AUTHOR = "SELECT user.name FROM post JOIN user ON post.created_user_id=user.id WHERE post.created_user_id = ?";
 
+    /**
+     * <h2>getConnection</h2>
+     * <p>
+     * Get the connection from mySQL
+     * </p>
+     *
+     * @throws SQLException
+     * @return Connection
+     */
     private Connection getConnection() throws SQLException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -38,6 +134,14 @@ public class PostDaoImpl implements PostDao {
         }
     }
 
+    /**
+     * <h2>dbInsertPost</h2>
+     * <p>
+     * Insert Post
+     * </p>
+     * 
+     * @param post Post
+     */
     @Override
     public void dbInsertPost(Post post) {
         try (Connection connection = getConnection();
@@ -55,6 +159,17 @@ public class PostDaoImpl implements PostDao {
         }
     }
 
+    /**
+     * <h2>dbGetAllPosts</h2>
+     * <p>
+     * Get All Posts with LIMIT
+     * </p>
+     * 
+     * @param id         int
+     * @param searchData String
+     * @param pageNumber int
+     * @return List<Post>
+     */
     @Override
     public List<Post> dbGetAllPosts(int id, String searchData, int pageNumber) {
         boolean isAllPost = Common.isDataNullOrEmpty(searchData);
@@ -88,6 +203,15 @@ public class PostDaoImpl implements PostDao {
         return posts;
     }
 
+    /**
+     * <h2>dbGetPosts</h2>
+     * <p>
+     * Get All Posts without LIMIT
+     * </p>
+     * 
+     * @param id int
+     * @return List<Post>
+     */
     @Override
     public List<Post> dbGetPosts(int id) {
         List<Post> posts = new ArrayList<>();
@@ -111,6 +235,15 @@ public class PostDaoImpl implements PostDao {
         return posts;
     }
 
+    /**
+     * <h2>dbGetPostById</h2>
+     * <p>
+     * Get Post By ID
+     * </p>
+     * 
+     * @param id int
+     * @return Post
+     */
     @Override
     public Post dbGetPostById(int id) {
         Post post = null;
@@ -118,7 +251,6 @@ public class PostDaoImpl implements PostDao {
                 PreparedStatement preparedStatement = connection.prepareStatement(SELECT_POST_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
-
             while (rs.next()) {
                 String title = rs.getString("title");
                 String description = rs.getString("description");
@@ -134,6 +266,14 @@ public class PostDaoImpl implements PostDao {
         return post;
     }
 
+    /**
+     * <h2>dbUpdatePost</h2>
+     * <p>
+     * Update Post
+     * </p>
+     * 
+     * @param post int
+     */
     @Override
     public void dbUpdatePost(Post post) {
         try (Connection connection = getConnection();
@@ -150,6 +290,14 @@ public class PostDaoImpl implements PostDao {
         }
     }
 
+    /**
+     * <h2>dbDeletePost</h2>
+     * <p>
+     * Delete Post
+     * </p>
+     * 
+     * @param id int
+     */
     @Override
     public void dbDeletePost(int id) {
         try (Connection connection = getConnection();
@@ -161,6 +309,16 @@ public class PostDaoImpl implements PostDao {
         }
     }
 
+    /**
+     * <h2>dbGetTotalCount</h2>
+     * <p>
+     * Get Total Count of Posts
+     * </p>
+     * 
+     * @param id         int
+     * @param searchData String
+     * @return int
+     */
     @Override
     public int dbGetTotalCount(int id, String searchData) {
         boolean isAllPost = searchData == null || searchData == "";
@@ -185,6 +343,15 @@ public class PostDaoImpl implements PostDao {
         return count;
     }
 
+    /**
+     * <h2>dbGetAuthor</h2>
+     * <p>
+     * Get Author of Post
+     * </p>
+     * 
+     * @param id int
+     * @return String
+     */
     @Override
     public String dbGetAuthor(int id) {
         String author = null;

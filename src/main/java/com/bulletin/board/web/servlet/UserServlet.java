@@ -30,17 +30,55 @@ import com.bulletin.board.bl.service.user.impl.UserServiceImpl;
 import com.bulletin.board.common.Common;
 import com.bulletin.board.web.form.UserForm;
 
+/**
+ * <h2>UserServlet Class</h2>
+ * <p>
+ * Process for Displaying UserServlet
+ * </p>
+ * 
+ * @author ZawLwinTun
+ *
+ */
 @MultipartConfig
 @WebServlet("/user/*")
 public class UserServlet extends HttpServlet {
+    /**
+     * <h2>serialVersionUID</h2>
+     * <p>
+     * serialVersionUID
+     * </p>
+     */
     private static final long serialVersionUID = 1L;
+    /**
+     * <h2>userService</h2>
+     * <p>
+     * userService
+     * </p>
+     */
     private final UserService userService;
 
+    /**
+     * <h2>Constructor for UserServlet</h2>
+     * <p>
+     * Constructor for UserServlet
+     * </p>
+     */
     public UserServlet() {
         super();
         this.userService = new UserServiceImpl();
     }
 
+    /**
+     * <h2>doGet</h2>
+     * <p>
+     * Get Method
+     * </p>
+     * 
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -92,12 +130,36 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    /**
+     * <h2>doPost</h2>
+     * <p>
+     * Post Method
+     * </p>
+     * 
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
     }
 
+    /**
+     * <h2>showEditForm</h2>
+     * <p>
+     * Forward to User Edit Page
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws SQLException
+     * @throws ServletException
+     * @throws IOException
+     * @return void
+     */
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         Object role = Common.getLoginUserRole(request);
@@ -113,6 +175,19 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    /**
+     * <h2>insertUser</h2>
+     * <p>
+     * Insert User
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws SQLException
+     * @throws IOException
+     * @throws ServletException
+     * @return void
+     */
     private void insertUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         UserForm newUser = getUserParameters(request);
@@ -123,6 +198,20 @@ public class UserServlet extends HttpServlet {
         Common.redirectToPage("list", response);
     }
 
+    /**
+     * <h2>listUsers</h2>
+     * <p>
+     * Get All Users with LIMIT
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @param isSearch boolean
+     * @throws SQLException
+     * @throws IOException
+     * @throws ServletException
+     * @return void
+     */
     private void listUsers(HttpServletRequest request, HttpServletResponse response, boolean isSearch)
             throws SQLException, IOException, ServletException {
         HttpSession session = request.getSession();
@@ -146,6 +235,19 @@ public class UserServlet extends HttpServlet {
         Common.forwardToPage(Common.USER_LIST_URL, request, response);
     }
 
+    /**
+     * <h2>detailUser</h2>
+     * <p>
+     * Forward to User Detail Page
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws SQLException
+     * @throws IOException
+     * @throws ServletException
+     * @return void
+     */
     private void detailUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -154,6 +256,19 @@ public class UserServlet extends HttpServlet {
         Common.forwardToPage(Common.USER_DETAIL_URL, request, response);
     }
 
+    /**
+     * <h2>updateUser</h2>
+     * <p>
+     * Update User
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws SQLException
+     * @throws IOException
+     * @throws ServletException
+     * @return void
+     */
     private void updateUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         UserForm updatedUser = getUserParameters(request);
@@ -161,6 +276,18 @@ public class UserServlet extends HttpServlet {
         Common.redirectToPage("list", response);
     }
 
+    /**
+     * <h2>changePassword</h2>
+     * <p>
+     * Change User Password
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException
+     * @throws ServletException
+     * @return void
+     */
     private void changePassword(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -177,12 +304,35 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    /**
+     * <h2>deleteUser</h2>
+     * <p>
+     * Delete User
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws SQLException
+     * @throws IOException
+     * @return void
+     */
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         userService.doDeleteUser(id);
         Common.redirectToPage("list", response);
     }
 
+    /**
+     * <h2>getUserParameters</h2>
+     * <p>
+     * Get the Parameters of User from JSP
+     * </p>
+     *
+     * @param request HttpServletRequest
+     * @throws IOException
+     * @throws ServletException
+     * @return UserForm
+     */
     private UserForm getUserParameters(HttpServletRequest request) throws IOException, ServletException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String idParam = request.getParameter("id");

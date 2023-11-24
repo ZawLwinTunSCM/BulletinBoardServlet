@@ -16,16 +16,55 @@ import com.bulletin.board.bl.service.user.UserService;
 import com.bulletin.board.bl.service.user.impl.UserServiceImpl;
 import com.bulletin.board.common.Common;
 
+/**
+ * <h2>AuthServlet Class</h2>
+ * <p>
+ * Process for Displaying AuthServlet
+ * </p>
+ * 
+ * @author ZawLwinTun
+ *
+ */
 @WebServlet("/auth/*")
 public class AuthServlet extends HttpServlet {
+    /**
+     * <h2>serialVersionUID</h2>
+     * <p>
+     * serialVersionUID
+     * </p>
+     */
     private static final long serialVersionUID = 1L;
 
-    private final UserService userService = new UserServiceImpl();
+    /**
+     * <h2>userService</h2>
+     * <p>
+     * userService
+     * </p>
+     */
+    private final UserService userService;
 
+    /**
+     * <h2>Constructor for AuthServlet</h2>
+     * <p>
+     * Constructor for AuthServlet
+     * </p>
+     */
     public AuthServlet() {
         super();
+        userService = new UserServiceImpl();
     }
 
+    /**
+     * <h2>doGet</h2>
+     * <p>
+     * Get Method
+     * </p>
+     * 
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -46,12 +85,35 @@ public class AuthServlet extends HttpServlet {
         }
     }
 
+    /**
+     * <h2>doPost</h2>
+     * <p>
+     * Post Method
+     * </p>
+     * 
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
     }
 
+    /**
+     * <h2>loginAction</h2>
+     * <p>
+     * Login the User
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     * @return void
+     */
     private void loginAction(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
@@ -74,6 +136,18 @@ public class AuthServlet extends HttpServlet {
         }
     }
 
+    /**
+     * <h2>logoutAction</h2>
+     * <p>
+     * Logout the User
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     * @return void
+     */
     private void logoutAction(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
