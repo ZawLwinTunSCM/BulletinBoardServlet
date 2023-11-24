@@ -16,7 +16,9 @@
         <div class="col-md-4 text-center">
           <h3>No New Post.</h3>
           <a href="<%=request.getContextPath()%>/post/new"
-            class="btn btn-primary">Add New Post</a>
+            class="btn btn-primary mx-3">Add New Post</a> <a
+            href="<%=request.getContextPath()%>/post/upload"
+            class="btn btn-primary mx-3">Upload</a>
         </div>
       </c:when>
       <c:when test="${empty listPost && not empty searchData}">
@@ -27,7 +29,7 @@
             <div class="col-md-4 d-flex justify-content-between">
               <a href="<%=request.getContextPath()%>/post/new"
                 class="btn btn-primary">Add New Post</a> <a
-                href="#"
+                href="<%=request.getContextPath()%>/post/upload"
                 class="btn btn-primary">Upload</a> <a
                 href="<%=request.getContextPath()%>/post/download"
                 class="btn btn-primary">Download</a>
@@ -57,8 +59,8 @@
             <div class="col-md-4 d-flex justify-content-between">
               <a href="<%=request.getContextPath()%>/post/new"
                 class="btn btn-primary">Add New Post</a> <a
-                href="#"
-                class="btn btn-primary">Upload</a> <a
+                href="<%=request.getContextPath()%>/post/upload"
+                class="btn btn-primary">Upload</a><a
                 href="<%=request.getContextPath()%>/post/download"
                 class="btn btn-primary">Download</a>
             </div>
@@ -89,7 +91,7 @@
               <c:forEach var="post" items="${listPost}" varStatus="loop">
                 <tr
                   style="vertical-align: middle; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                  <td><c:out value="${loop.count}"/></td>
+                  <td><c:out value="${loop.count}" /></td>
                   <td class="text-truncate"><a
                     href="<%=request.getContextPath()%>/post/detail?id=${post.id}"><c:out
                         value="${post.title}" /></a></td>

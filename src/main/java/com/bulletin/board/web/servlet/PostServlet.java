@@ -1,23 +1,34 @@
 package com.bulletin.board.web.servlet;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import com.bulletin.board.bl.dto.PostDTO;
 import com.bulletin.board.bl.service.post.PostService;
 import com.bulletin.board.bl.service.post.impl.PostServiceImpl;
 import com.bulletin.board.common.Common;
 import com.bulletin.board.web.form.PostForm;
+import com.opencsv.CSVReader;
 
+@MultipartConfig
 @WebServlet("/post/*")
 public class PostServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -66,6 +77,15 @@ public class PostServlet extends HttpServlet {
                 break;
             case "/download":
                 exportCSVPost(response);
+                break;
+            case "/downloadTemplate":
+                downloadTemplate(request, response);
+                break;
+            case "/upload":
+                Common.forwardToPage("/jsp/post/upload.jsp", request, response);
+                break;
+            case "/uploadPost":
+                uploadPost(request, response);
                 break;
             default:
                 Common.error404(request, response);
@@ -172,11 +192,84 @@ public class PostServlet extends HttpServlet {
                     + "," + status + "," + post.getCreatedAt() + "\n");
         }
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=data.csv");
+        response.setHeader("Content-Disposition", "attachment; filename=posts.csv");
         try (PrintWriter writer = response.getWriter()) {
             writer.write(csvData.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Path path = Paths.get(request.getServletContext().getRealPath("/") + "resources" + File.separator + "template"
+                + File.separator + "template.csv");
+        if (Files.exists(path) && Files.isRegularFile(path)) {
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + path.getFileName() + "\"");
+            Files.copy(path, response.getOutputStream());
+        } else {
+            response.getWriter().println("File not found");
+        }
+    }
+
+    private void uploadPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        List<PostForm> posts = new ArrayList<>();
+        int id = Common.getLoginUserId(request);
+        Part filePart = request.getPart("file");
+        InputStream input = filePart.getInputStream();
+        CSVReader csvReader = new CSVReader(new InputStreamReader(input));
+        List<String[]> allData = csvReader.readAll();
+
+        for (int i = 1; i < allData.size(); i++) {
+            PostForm newPost = createPostFromCSVData(allData.get(i), request, response, i);
+            if (newPost == null) {
+                return;
+            }
+            newPost.setCreatedUserId(id);
+            newPost.setUpdatedUserId(id);
+            posts.add(newPost);
+        }
+
+        for (PostForm post : posts) {
+            postService.doInsertPost(post);
+        }
+
+        request.setAttribute("successMsg", "Data are Successfully Uploaded!");
+        Common.forwardToPage("/jsp/post/upload.jsp", request, response);
+    }
+
+    private PostForm createPostFromCSVData(String[] post, HttpServletRequest request, HttpServletResponse response,
+            int row) throws IOException, ServletException {
+        PostForm newPost = new PostForm();
+
+        for (int j = 0; j < post.length; j++) {
+            if (dataValidation(post[j])) {
+                request.setAttribute("errorMsg", "Data is missing at row : " + (row + 1) + " column : " + (j + 1));
+                Common.forwardToPage("/jsp/post/upload.jsp", request, response);
+                return null;
+            }
+            setPostField(newPost, j, post[j]);
+        }
+
+        return newPost;
+    }
+
+    private void setPostField(PostForm newPost, int columnIndex, String data) {
+        switch (columnIndex) {
+        case 0:
+            newPost.setTitle(data);
+            break;
+        case 1:
+            newPost.setDescription(data);
+            break;
+        default:
+            newPost.setStatus(Integer.parseInt(data));
+            break;
+        }
+    }
+
+    private boolean dataValidation(String data) {
+        return (data == null || data.isEmpty());
     }
 }

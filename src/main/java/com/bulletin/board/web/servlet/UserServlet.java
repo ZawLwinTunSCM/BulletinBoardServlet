@@ -30,8 +30,8 @@ import com.bulletin.board.bl.service.user.impl.UserServiceImpl;
 import com.bulletin.board.common.Common;
 import com.bulletin.board.web.form.UserForm;
 
-@WebServlet("/user/*")
 @MultipartConfig
+@WebServlet("/user/*")
 public class UserServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final UserService userService;
@@ -187,24 +187,10 @@ public class UserServlet extends HttpServlet {
         Common.redirectToPage("list", response);
     }
 
-    private String getFileName(final Part part) {
-        for (String content : part.getHeader("content-disposition").split(";")) {
-            if (content.trim().startsWith("filename")) {
-                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
-            }
-        }
-        return null;
-    }
-
     private UserForm getUserParameters(HttpServletRequest request) throws IOException, ServletException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String idParam = request.getParameter("id");
         int id = (idParam != null && !idParam.isEmpty()) ? Integer.parseInt(idParam) : 0;
-        String img = request.getParameter("img");
-        Part filePart = request.getPart("profile");
-        String fileName = getFileName(filePart);
-        String uploadDirectory = request.getServletContext().getRealPath("/") + "resources" + File.separator + "img"
-                + File.separator;
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -218,10 +204,17 @@ public class UserServlet extends HttpServlet {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        try (InputStream input = filePart.getInputStream()) {
-            fileName = fileName == null || fileName == "" ? img.split("/")[4] : fileName;
-            Path filePath = Paths.get(uploadDirectory, fileName);
-            Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
+        Part filePart = request.getPart("profile");
+        String fileName = null;
+        if (filePart.getSize() != 0) {
+            fileName = Common.getFileName(filePart);
+            String uploadDirectory = request.getServletContext().getRealPath("/") + "resources" + File.separator + "img"
+                    + File.separator;
+            try (InputStream input = filePart.getInputStream()) {
+                Path filePath = Paths.get(uploadDirectory, fileName);
+                Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+
         }
         return new UserForm(id, fileName, name, email, password, phone, address, role, dob, id, id);
     }

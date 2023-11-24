@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 public class Common {
 
@@ -42,5 +43,14 @@ public class Common {
     public static int getLoginUserRole(HttpServletRequest request) {
         HttpSession session = request.getSession();
         return Integer.parseInt(session.getAttribute("userRole").toString());
+    }
+
+    public static String getFileName(final Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
     }
 }

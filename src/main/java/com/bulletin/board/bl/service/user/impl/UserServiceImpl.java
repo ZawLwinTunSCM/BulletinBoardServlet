@@ -48,7 +48,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void doUpdateUser(UserForm userForm) {
         UserDTO userDTO = new UserDTO(userDao.dbGetUserById(userForm.getId()));
-        userDTO.setProfile(userForm.getProfile());
+        if (userForm.getProfile() != null) {
+            userDTO.setProfile(userForm.getProfile());
+        }
         userDTO.setName(userForm.getName());
         userDTO.setEmail(userForm.getEmail());
         userDTO.setPhone(userForm.getPhone());
