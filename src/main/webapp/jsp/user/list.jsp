@@ -95,12 +95,12 @@
                   <td><c:out value="${user.role == 0 ? 'Admin' : 'User'}" /></td>
                   <td class="d-flex justify-content-between"><a
                     href="edit?id=<c:out value='${user.id}'/>"
-                    class="btn btn-secondary col-5 ms-2">Edit</a>
+                    class="btn col-5 ms-2 ${sessionScope.userRole ==0 || sessionScope.userId == user.id ? 'btn-primary':'btn-secondary disabled'}">Edit</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <button type="button" data-bs-toggle="modal"
                       data-bs-target="#deleteModal"
                       onclick="addLink(${user.id})"
-                      class="btn btn-danger col-5 me-2">Delete</button></td>
+                      class="btn col-5 me-2 ${sessionScope.userRole ==0 || sessionScope.userId == user.id ? 'btn-danger' :'btn-secondary disabled'}">Delete</button></td>
                 </tr>
               </c:forEach>
             </tbody>

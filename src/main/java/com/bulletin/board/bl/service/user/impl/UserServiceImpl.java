@@ -20,8 +20,6 @@ public class UserServiceImpl implements UserService {
     public void doInsertUser(UserForm userForm) {
         User user = new User(userForm);
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
-        user.setCreatedUserId(0);
-        user.setUpdatedUserId(0);
         userDao.dbInsertUser(user);
     }
 

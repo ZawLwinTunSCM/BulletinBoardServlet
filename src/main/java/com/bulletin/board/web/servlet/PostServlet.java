@@ -35,7 +35,7 @@ public class PostServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Object role = session.getAttribute("userRole");
         try {
-            if (!Common.isValidRole(role) || Common.isValidRole(role) && Integer.parseInt(role.toString()) != 0) {
+            if (!Common.isValidRole(role)) {
                 Common.error403(request, response);
                 return;
             }
@@ -84,14 +84,25 @@ public class PostServlet extends HttpServlet {
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
+
+        Object role = Common.getLoginUserRole(request);
         int id = Integer.parseInt(request.getParameter("id"));
         PostDTO post = postService.doGetPostById(id);
-        request.setAttribute("post", post);
-        Common.forwardToPage("/jsp/post/insert.jsp", request, response);
+        int loginId = Common.getLoginUserId(request);
+        if (Common.isValidRole(role)
+                && (Integer.parseInt(role.toString()) == 0 || (post != null && post.getCreatedUserId() == loginId))) {
+            request.setAttribute("post", post);
+            Common.forwardToPage("/jsp/post/insert.jsp", request, response);
+        } else {
+            Common.error403(request, response);
+        }
     }
 
     private void insertPost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         PostForm newPost = getPostParameters(request);
+        int id = Common.getLoginUserId(request);
+        newPost.setCreatedUserId(id);
+        newPost.setUpdatedUserId(id);
         postService.doInsertPost(newPost);
         Common.redirectToPage("list", response);
     }
@@ -103,19 +114,20 @@ public class PostServlet extends HttpServlet {
         String pageNum = request.getParameter("pageNumber");
         int pageNumber = pageNum == null || pageNum == "" ? 1 : Integer.parseInt(pageNum);
         if (pageNumber == 1 && isSearch && searchData != null) {
-            session.setAttribute("searchData", searchData);
+            session.setAttribute("search", searchData);
         }
         if (isSearch) {
             if (searchData == null) {
-                searchData = session.getAttribute("searchData").toString();
+                searchData = session.getAttribute("search").toString();
             }
         }
-        List<PostDTO> posts = postService.doGetAllPosts(searchData, pageNumber);
+        int id = Common.getLoginUserId(request);
+        List<PostDTO> posts = postService.doGetAllPosts(id, searchData, pageNumber);
         request.setAttribute("listPost", posts);
         request.setAttribute("searchData", searchData);
         request.setAttribute("pageNum", pageNumber);
         request.setAttribute("type", isSearch ? "search" : "list");
-        request.setAttribute("total", postService.doGetTotalCount(searchData));
+        request.setAttribute("total", postService.doGetTotalCount(id, searchData));
         Common.forwardToPage("/jsp/post/list.jsp", request, response);
     }
 
@@ -129,6 +141,7 @@ public class PostServlet extends HttpServlet {
 
     private void updatePost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         PostForm updatedPost = getPostParameters(request);
+        updatedPost.setUpdatedUserId(Common.getLoginUserId(request));
         postService.doUpdatePost(updatedPost);
         Common.redirectToPage("list", response);
     }
@@ -145,7 +158,7 @@ public class PostServlet extends HttpServlet {
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         int status = Integer.parseInt(request.getParameter("status"));
-        return new PostForm(id, title, description, status, id);
+        return new PostForm(id, title, description, status, id, id);
     }
 
     private void exportCSVPost(HttpServletResponse response) {
@@ -154,9 +167,9 @@ public class PostServlet extends HttpServlet {
         csvData.append("ID, Title, Description, Author, Status, Posted Date\n");
         for (int i = 0; i < posts.size(); i++) {
             PostDTO post = posts.get(i);
-            String status = post.getStatus() == 0 ? "Admin" : "User";
-            csvData.append(post.getId() + "," + post.getTitle() + "," + post.getDescription() + ",Leo," + status + ","
-                    + post.getUpdatedAt() + "\n");
+            String status = post.getStatus() == 0 ? "Private" : "Public";
+            csvData.append(post.getId() + "," + post.getTitle() + "," + post.getDescription() + "," + post.getAuthor()
+                    + "," + status + "," + post.getCreatedAt() + "\n");
         }
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=data.csv");

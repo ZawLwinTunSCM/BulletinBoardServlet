@@ -18,14 +18,15 @@ public class PostDaoImpl implements PostDao {
     private static final String JDBC_PASSWORD = "root";
 
     private static final String INSERT_POST_SQL = "INSERT INTO post (title, description, status, created_user_id, updated_user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_ALL_POSTS = "SELECT * FROM post LIMIT 10 OFFSET ?";
+    private static final String SELECT_ALL_POSTS = "SELECT * FROM post WHERE created_user_id = ? OR status = 1 LIMIT 10 OFFSET ?";
     private static final String SELECT_POSTS = "SELECT * FROM post";
     private static final String SELECT_POST_BY_ID = "SELECT * FROM post WHERE id = ?";
-    private static final String SEARCH_POSTS = "SELECT * FROM post WHERE title LIKE ? OR description LIKE ? LIMIT 10 OFFSET ?";
+    private static final String SEARCH_POSTS = "SELECT * FROM post WHERE (created_user_id = ? OR status = 1) AND (title LIKE ? OR description LIKE ?) LIMIT 10 OFFSET ?";
     private static final String UPDATE_POST_SQL = "UPDATE post SET title = ?, description = ?, status = ?, updated_user_id=?, updated_at=? WHERE id = ?";
     private static final String DELETE_POST_SQL = "DELETE FROM post WHERE id = ?";
-    private static final String COUNT_POSTS = "SELECT COUNT(*) as count FROM post";
-    private static final String SEARCH_COUNT_POSTS = "SELECT COUNT(*) as count FROM post WHERE title LIKE ? OR description LIKE ?";
+    private static final String COUNT_POSTS = "SELECT COUNT(*) as count FROM post WHERE created_user_id = ? OR status = 1";
+    private static final String SEARCH_COUNT_POSTS = "SELECT COUNT(*) as count FROM post WHERE (created_user_id = ? OR status = 1) AND (title LIKE ? OR description LIKE ?)";
+    private static final String GET_AUTHOR = "SELECT user.name FROM post JOIN user ON post.created_user_id=user.id WHERE post.created_user_id = ?";
 
     private Connection getConnection() throws SQLException {
         try {
@@ -56,29 +57,31 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public List<Post> dbGetAllPosts(String searchData, int pageNumber) {
+    public List<Post> dbGetAllPosts(int id, String searchData, int pageNumber) {
         boolean isAllPost = searchData == null || searchData == "";
         List<Post> posts = new ArrayList<>();
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection
                         .prepareStatement(isAllPost ? SELECT_ALL_POSTS : SEARCH_POSTS)) {
             if (!isAllPost) {
-                preparedStatement.setString(1, "%" + searchData + "%");
+                preparedStatement.setInt(1, id);
                 preparedStatement.setString(2, "%" + searchData + "%");
-                preparedStatement.setInt(3, (pageNumber - 1) * 10);
+                preparedStatement.setString(3, "%" + searchData + "%");
+                preparedStatement.setInt(4, (pageNumber - 1) * 10);
             } else {
-                preparedStatement.setInt(1, (pageNumber - 1) * 10);
+                preparedStatement.setInt(1, id);
+                preparedStatement.setInt(2, (pageNumber - 1) * 10);
             }
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("id");
+                int postId = rs.getInt("id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
                 int status = rs.getInt("status");
                 int createdUserId = rs.getInt("created_user_id");
                 int updatedUserId = rs.getInt("updated_user_id");
-                Date updatedAt = rs.getDate("updated_at");
-                posts.add(new Post(id, title, description, status, createdUserId, updatedUserId, null, updatedAt));
+                Date createdAt = rs.getDate("created_at");
+                posts.add(new Post(postId, title, description, status, createdUserId, updatedUserId, createdAt, null));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -99,8 +102,8 @@ public class PostDaoImpl implements PostDao {
                 int status = rs.getInt("status");
                 int createdUserId = rs.getInt("created_user_id");
                 int updatedUserId = rs.getInt("updated_user_id");
-                Date updatedAt = rs.getDate("updated_at");
-                posts.add(new Post(id, title, description, status, createdUserId, updatedUserId, null, updatedAt));
+                Date createdAt = rs.getDate("created_at");
+                posts.add(new Post(id, title, description, status, createdUserId, updatedUserId, createdAt, null));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -123,8 +126,8 @@ public class PostDaoImpl implements PostDao {
                 int status = rs.getInt("status");
                 int createdUserId = rs.getInt("created_user_id");
                 int updatedUserId = rs.getInt("updated_user_id");
-                Date updatedAt = rs.getDate("updated_at");
-                post = new Post(id, title, description, status, createdUserId, updatedUserId, null, updatedAt);
+                Date createdAt = rs.getDate("created_at");
+                post = new Post(id, title, description, status, createdUserId, updatedUserId, createdAt, null);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -160,7 +163,7 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public int dbGetTotalCount(String searchData) {
+    public int dbGetTotalCount(int id, String searchData) {
         boolean isAllPost = searchData == null || searchData == "";
         int count = 0;
         try (Connection connection = getConnection();
@@ -169,6 +172,9 @@ public class PostDaoImpl implements PostDao {
             if (!isAllPost) {
                 preparedStatement.setString(1, "%" + searchData + "%");
                 preparedStatement.setString(2, "%" + searchData + "%");
+                preparedStatement.setInt(3, id);
+            } else {
+                preparedStatement.setInt(1, id);
             }
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -178,5 +184,23 @@ public class PostDaoImpl implements PostDao {
             e.printStackTrace();
         }
         return count;
+    }
+
+    @Override
+    public String dbGetAuthor(int id) {
+        String author = null;
+        try (Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(GET_AUTHOR)) {
+            preparedStatement.setInt(1, id);
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                author = rs.getString("name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return author;
     }
 }

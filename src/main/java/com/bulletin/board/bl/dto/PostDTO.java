@@ -19,7 +19,8 @@ public class PostDTO {
     private String description;
     private int status;
     private String author;
-    private Date updatedAt;
+    private Date createdAt;
+    private int createdUserId;
     private int updatedUserId;
 
     public PostDTO(Post post) {
@@ -27,8 +28,8 @@ public class PostDTO {
         this.title = post.getTitle();
         this.description = post.getDescription();
         this.status = post.getStatus();
-        this.updatedAt = post.getUpdatedAt();
+        this.createdUserId = post.getCreatedUserId();
         this.updatedUserId = post.getUpdatedUserId();
-        this.updatedAt = post.getUpdatedAt();
+        this.createdAt = post.getCreatedAt();
     }
 }

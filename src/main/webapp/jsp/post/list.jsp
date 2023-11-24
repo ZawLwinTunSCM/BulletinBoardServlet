@@ -27,7 +27,7 @@
             <div class="col-md-4 d-flex justify-content-between">
               <a href="<%=request.getContextPath()%>/post/new"
                 class="btn btn-primary">Add New Post</a> <a
-                href="<%=request.getContextPath()%>/post/upload"
+                href="#"
                 class="btn btn-primary">Upload</a> <a
                 href="<%=request.getContextPath()%>/post/download"
                 class="btn btn-primary">Download</a>
@@ -47,9 +47,9 @@
         </div>
       </c:when>
       <c:when test="${not empty listPost}">
-      <input type="hidden" id="total" value="${total}">
-      <input type="hidden" id="pageNum" value="${pageNum}">
-      <input type="hidden" id="type" value="${type}">
+        <input type="hidden" id="total" value="${total}">
+        <input type="hidden" id="pageNum" value="${pageNum}">
+        <input type="hidden" id="type" value="${type}">
         <div class="col-md-8">
           <h3 class="text-center">List of Posts</h3>
           <hr>
@@ -57,7 +57,7 @@
             <div class="col-md-4 d-flex justify-content-between">
               <a href="<%=request.getContextPath()%>/post/new"
                 class="btn btn-primary">Add New Post</a> <a
-                href="<%=request.getContextPath()%>/post/upload"
+                href="#"
                 class="btn btn-primary">Upload</a> <a
                 href="<%=request.getContextPath()%>/post/download"
                 class="btn btn-primary">Download</a>
@@ -89,7 +89,7 @@
               <c:forEach var="post" items="${listPost}" varStatus="loop">
                 <tr
                   style="vertical-align: middle; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                  <td><c:out value="${loop.count}" /></td>
+                  <td><c:out value="${loop.count}"/></td>
                   <td class="text-truncate"><a
                     href="<%=request.getContextPath()%>/post/detail?id=${post.id}"><c:out
                         value="${post.title}" /></a></td>
@@ -97,15 +97,15 @@
                       value="${post.description}" /></td>
                   <td class="text-truncate"><c:out
                       value="${post.author}" /></td>
-                  <td><c:out value="${post.updatedAt}" /></td>
+                  <td><c:out value="${post.createdAt}" /></td>
                   <td class="d-flex justify-content-between"><a
                     href="edit?id=<c:out value='${post.id}'/>"
-                    class="btn btn-secondary col-5 ms-2">Edit</a>
+                    class="btn col-5 ms-2 ${sessionScope.userRole ==0 || sessionScope.userId == post.createdUserId ? 'btn-primary':'btn-secondary disabled'}">Edit</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <button type="button" data-bs-toggle="modal"
                       data-bs-target="#deleteModal"
                       onclick="addLink(${post.id})"
-                      class="btn btn-danger col-5 me-2">Delete</button></td>
+                      class="btn col-5 me-2 ${sessionScope.userRole ==0 || sessionScope.userId == post.createdUserId ? 'btn-danger':'btn-secondary disabled'}">Delete</button></td>
                 </tr>
               </c:forEach>
             </tbody>

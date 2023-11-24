@@ -24,6 +24,8 @@ public class UserForm {
     private String address;
     private int role;
     private Date dob;
+    private int createdUserId;
+    private int updatedUserId;
 
     public UserForm(UserDTO userDTO) {
         this.id = userDTO.getId();
@@ -47,5 +49,6 @@ public class UserForm {
         this.address = user.getAddress();
         this.role = user.getRole();
         this.dob = user.getDob();
+        this.createdUserId = user.getCreatedUserId();
     }
 }

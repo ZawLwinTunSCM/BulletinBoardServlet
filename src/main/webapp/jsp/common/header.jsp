@@ -34,20 +34,30 @@
       <div class="container-fluid text-white">
         <a class="navbar-brand" href="#"> MTM Bulletin Board </a>
         <c:if test="${not empty sessionScope.userName}">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li class="nav-item"><a
-                class="nav-link me-5 text-white"
-                href="<%=request.getContextPath()%>/post/list">Posts</a></li>
-              <li class="nav-item"><a
-                class="nav-link me-5 text-white"
-                href="<%=request.getContextPath()%>/user/list">Users</a></li>
-              <li class="nav-item"><a
-                class="nav-link me-5 text-white"
-                href="<%=request.getContextPath()%>/user/passChange">Password Change</a></li>
-              <li class="nav-item"><a
-                class="nav-link me-5 text-white"
-                href="<%=request.getContextPath()%>/auth/logout">Logout</a></li>
-            </ul>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a
+              class="nav-link me-5 text-white"
+              href="<%=request.getContextPath()%>/post/list">Posts</a></li>
+            <li class="nav-item"><a
+              class="nav-link me-5 text-white"
+              href="<%=request.getContextPath()%>/user/list">Users</a></li>
+            <li class="nav-item dropdown"><a
+              class="nav-link dropdown-toggle text-white" href="#"
+              id="navbarDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+                ${sessionScope.userName} </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a
+                  class="me-5 text-dark text-decoration-none dropdown-item"
+                  href="<%=request.getContextPath()%>/user/passChange">Password
+                    Change</a></li>
+                <li><a
+                  class="me-5 text-dark text-decoration-none dropdown-item"
+                  href="<%=request.getContextPath()%>/auth/logout">Logout</a>
+                </li>
+              </ul></li>
+
+          </ul>
         </c:if>
       </div>
     </nav>

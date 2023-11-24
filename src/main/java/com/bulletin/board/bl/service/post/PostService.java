@@ -8,7 +8,7 @@ import com.bulletin.board.web.form.PostForm;
 public interface PostService {
     public void doInsertPost(PostForm postForm);
 
-    public List<PostDTO> doGetAllPosts(String searchData, int pageNumber);
+    public List<PostDTO> doGetAllPosts(int id, String searchData, int pageNumber);
 
     public List<PostDTO> doGetPosts();
 
@@ -18,5 +18,5 @@ public interface PostService {
 
     public void doDeletePost(int id);
 
-    public int doGetTotalCount(String searchData);
+    public int doGetTotalCount(int id, String searchData);
 }

@@ -28,6 +28,7 @@ public class Post {
         this.title = postForm.getTitle();
         this.description = postForm.getDescription();
         this.status = postForm.getStatus();
+        this.createdUserId = postForm.getCreatedUserId();
         this.updatedUserId = postForm.getUpdatedUserId();
     }
 }

@@ -48,7 +48,7 @@ public class UserServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Object role = session.getAttribute("userRole");
         try {
-            if (!Common.isValidRole(role) || Common.isValidRole(role) && Integer.parseInt(role.toString()) != 0) {
+            if (!Common.isValidRole(role)) {
                 Common.error403(request, response);
                 return;
             }
@@ -100,15 +100,28 @@ public class UserServlet extends HttpServlet {
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
+        Object role = Common.getLoginUserRole(request);
         int id = Integer.parseInt(request.getParameter("id"));
         UserDTO user = userService.doGetUserById(id);
-        request.setAttribute("user", user);
-        Common.forwardToPage("/jsp/user/insert.jsp", request, response);
+        int loginId = Common.getLoginUserId(request);
+        System.out.println(Common.isValidRole(role));
+        System.out.println(Integer.parseInt(role.toString()) == 0);
+        System.out.println(user != null && user.getId() == loginId);
+        if (Common.isValidRole(role)
+                && (Integer.parseInt(role.toString()) == 0 || (user != null && user.getId() == loginId))) {
+            request.setAttribute("user", user);
+            Common.forwardToPage("/jsp/user/insert.jsp", request, response);
+        } else {
+            Common.error403(request, response);
+        }
     }
 
     private void insertUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         UserForm newUser = getUserParameters(request);
+        int id = Common.getLoginUserId(request);
+        newUser.setCreatedUserId(id);
+        newUser.setCreatedUserId(id);
         userService.doInsertUser(newUser);
         Common.redirectToPage("list", response);
     }
@@ -210,6 +223,6 @@ public class UserServlet extends HttpServlet {
             Path filePath = Paths.get(uploadDirectory, fileName);
             Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
         }
-        return new UserForm(id, fileName, name, email, password, phone, address, role, dob);
+        return new UserForm(id, fileName, name, email, password, phone, address, role, dob, id, id);
     }
 }

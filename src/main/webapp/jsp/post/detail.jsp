@@ -26,23 +26,26 @@
         <hr class="my-2">
         <div class="row">
           <div class="col-md-4">Author :</div>
-          <div class="col-md-8">Leo</div>
+          <div class="col-md-8">${post.author}</div>
         </div>
         <hr class="my-2">
         <div class="row">
           <div class="col-md-4">Posted Date :</div>
-          <div class="col-md-8">${post.updatedAt}</div>
+          <div class="col-md-8">${post.createdAt}</div>
         </div>
         <hr class="my-2">
         <div class="row">
           <div class="col-md-4">Status :</div>
-          <div class="col-md-8">${post.status == 0 ? 'Public' : 'Private'}</div>
+          <div class="col-md-8">${post.status == 1 ? 'Public' : 'Private'}</div>
         </div>
       </div>
       <div class="card-footer text-center">
-        <a href="edit?id=<c:out value='${post.id}'/>"
-          class="btn btn-primary col-2 mx-3">Edit</a> <a
-          href="<%=request.getContextPath()%>/post/list"
+        <c:if
+          test="${sessionScope.userRole ==0 || sessionScope.userId == post.createdUserId}">
+          <a href="edit?id=<c:out value='${post.id}'/>"
+            class="btn btn-primary col-2 mx-3">Edit</a>
+        </c:if>
+        <a href="<%=request.getContextPath()%>/post/list"
           class="btn btn-dark col-2 mx-3">Back</a>
       </div>
     </div>

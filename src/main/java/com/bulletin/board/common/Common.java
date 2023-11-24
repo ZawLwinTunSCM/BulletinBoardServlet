@@ -6,6 +6,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class Common {
 
@@ -31,5 +32,15 @@ public class Common {
     public static void error404(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         forwardToPage("/jsp/error/404.jsp", request, response);
+    }
+
+    public static int getLoginUserId(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        return Integer.parseInt(session.getAttribute("userId").toString());
+    }
+
+    public static int getLoginUserRole(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        return Integer.parseInt(session.getAttribute("userRole").toString());
     }
 }

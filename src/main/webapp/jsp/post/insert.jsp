@@ -37,14 +37,14 @@
             <label class="fw-medium">Status</label><br>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="status"
-                ${post.status == 0 ? 'checked':'' } id="public"
-                value="0" required> <label
+                ${post.status == 1 ? 'checked':'' } id="public"
+                value="1" required> <label
                 class="form-check-label" for="public">Public</label>
             </div>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="status"
-                ${post.status == 1? 'checked':'' } id="private"
-                value="1"> <label class="form-check-label"
+                ${post.status == 0? 'checked':'' } id="private"
+                value="0"> <label class="form-check-label"
                 for="private">Private</label>
             </div>
           </fieldset>

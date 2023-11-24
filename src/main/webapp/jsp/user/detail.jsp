@@ -50,9 +50,12 @@
         </div>
       </div>
       <div class="card-footer text-center">
-        <a href="edit?id=<c:out value='${user.id}'/>"
-          class="btn btn-primary col-2 mx-3">Edit</a> <a
-          href="<%=request.getContextPath()%>/user/list"
+        <c:if
+          test="${sessionScope.userRole ==0 || sessionScope.userId == user.id}">
+          <a href="edit?id=<c:out value='${user.id}'/>"
+            class="btn btn-primary col-2 mx-3">Edit</a>
+        </c:if>
+        <a href="<%=request.getContextPath()%>/user/list"
           class="btn btn-dark col-2 mx-3">Back</a>
       </div>
     </div>

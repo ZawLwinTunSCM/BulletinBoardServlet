@@ -17,18 +17,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public void doInsertPost(PostForm postForm) {
         Post post = new Post(postForm);
-        post.setCreatedUserId(0);
-        post.setUpdatedUserId(0);
         postDao.dbInsertPost(post);
     }
 
     @Override
-    public List<PostDTO> doGetAllPosts(String searchData, int pageNumber) {
+    public List<PostDTO> doGetAllPosts(int id, String searchData, int pageNumber) {
         List<PostDTO> postDTOs = new ArrayList<PostDTO>();
-        List<Post> posts = postDao.dbGetAllPosts(searchData, pageNumber);
+        List<Post> posts = postDao.dbGetAllPosts(id, searchData, pageNumber);
         for (int i = 0; i < posts.size(); i++) {
             PostDTO postDTO = new PostDTO(posts.get(i));
-            postDTO.setAuthor("Leo");
+            postDTO.setAuthor(postDao.dbGetAuthor(postDTO.getCreatedUserId()));
             postDTOs.add(postDTO);
         }
         return postDTOs;
@@ -40,7 +38,7 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postDao.dbGetPosts();
         for (int i = 0; i < posts.size(); i++) {
             PostDTO postDTO = new PostDTO(posts.get(i));
-            postDTO.setAuthor("Leo");
+            postDTO.setAuthor(postDao.dbGetAuthor(postDTO.getCreatedUserId()));
             postDTOs.add(postDTO);
         }
         return postDTOs;
@@ -48,7 +46,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO doGetPostById(int id) {
-        return new PostDTO(postDao.dbGetPostById(id));
+        PostDTO postDTO = new PostDTO(postDao.dbGetPostById(id));
+        postDTO.setAuthor(postDao.dbGetAuthor(postDTO.getCreatedUserId()));
+        return postDTO;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public int doGetTotalCount(String searchData) {
-        return postDao.dbGetTotalCount(searchData);
+    public int doGetTotalCount(int id, String searchData) {
+        return postDao.dbGetTotalCount(id, searchData);
     }
 }

@@ -1,5 +1,5 @@
 window.onload = function() {
-	setInitialImage();
+	setInitialImage(); 
 };
 
 function addLink(id) {

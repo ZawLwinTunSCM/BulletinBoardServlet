@@ -17,6 +17,7 @@ public class PostForm {
     private String title;
     private String description;
     private int status;
+    private int createdUserId;
     private int updatedUserId;
 
     public PostForm(PostDTO postDTO) {
@@ -24,6 +25,7 @@ public class PostForm {
         this.title = postDTO.getTitle();
         this.description = postDTO.getDescription();
         this.status = postDTO.getStatus();
+        this.createdUserId = postDTO.getCreatedUserId();
         this.updatedUserId = postDTO.getUpdatedUserId();
     }
 
@@ -32,6 +34,7 @@ public class PostForm {
         this.title = post.getTitle();
         this.description = post.getDescription();
         this.status = post.getStatus();
+        this.createdUserId = post.getCreatedUserId();
         this.updatedUserId = post.getUpdatedUserId();
     }
 }
