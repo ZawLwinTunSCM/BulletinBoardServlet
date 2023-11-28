@@ -23,8 +23,8 @@
           <c:if test="${errorMsg != null}">
             <div class="alert alert-danger" id="errorMessage">${errorMsg}</div>
           </c:if>
-          <c:if test="${logoutMsg != null}">
-            <div class="alert alert-success" id="errorMessage">${logoutMsg}</div>
+          <c:if test="${successMsg != null}">
+            <div class="alert alert-success" id="successMsg">${successMsg}</div>
           </c:if>
           <form action="${pageContext.request.contextPath}/auth/login"
             method="post">
@@ -40,8 +40,13 @@
                 required>
             </fieldset>
 
-            <div class="row justify-content-center">
-              <button type="submit" class="btn btn-primary col-2 mx-2">Login</button>
+            <div class="row justify-content-center text-center">
+              <button type="submit" class="btn btn-primary col-2 mx-2 mb-2">Login</button>
+              <a href="<%=request.getContextPath()%>/user/new" class="text-decoration-none">
+    Create Account 
+    <i class="fa-solid fa-user-plus"></i>
+</a>
+
             </div>
 
           </form>

@@ -154,8 +154,8 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.setString(6, user.getAddress());
             preparedStatement.setInt(7, user.getRole());
             preparedStatement.setDate(8, user.getDob());
-            preparedStatement.setInt(9, user.getCreatedUserId());
-            preparedStatement.setInt(10, user.getUpdatedUserId());
+            preparedStatement.setObject(9, user.getCreatedUserId() == 0 ? null : user.getCreatedUserId());
+            preparedStatement.setObject(10, user.getUpdatedUserId() == 0 ? null : user.getUpdatedUserId());
             preparedStatement.setDate(11, new Date(System.currentTimeMillis()));
             preparedStatement.setDate(12, new Date(System.currentTimeMillis()));
             preparedStatement.executeUpdate();

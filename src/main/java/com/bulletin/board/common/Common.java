@@ -122,19 +122,6 @@ public class Common {
     public static final String USER_PASS_CHANGE_URL = "/jsp/user/passChange.jsp";
 
     /**
-     * <h2>isValidRole</h2>
-     * <p>
-     * Check whether if the role is valid or not
-     * </p>
-     *
-     * @param role Object
-     * @return boolean
-     */
-    public static boolean isValidRole(Object role) {
-        return role != null && !"".equals(role);
-    }
-
-    /**
      * <h2>forwardToPage</h2>
      * <p>
      * Forward to another page
@@ -213,7 +200,8 @@ public class Common {
      */
     public static int getLoginUserId(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        return Integer.parseInt(session.getAttribute("userId").toString());
+        Object id = session.getAttribute("userId");
+        return id == null ? 0 : Integer.parseInt(id.toString());
     }
 
     /**
@@ -227,7 +215,8 @@ public class Common {
      */
     public static int getLoginUserRole(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        return Integer.parseInt(session.getAttribute("userRole").toString());
+        Object role = session.getAttribute("userRole");
+        return role == null ? 3 : Integer.parseInt(role.toString());
     }
 
     /**

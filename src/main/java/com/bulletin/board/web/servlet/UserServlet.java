@@ -83,13 +83,8 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getPathInfo();
-        HttpSession session = request.getSession();
-        Object role = session.getAttribute(Common.SESSION_USER_ROLE);
+        int role = Common.getLoginUserRole(request);
         try {
-            if (!Common.isValidRole(role)) {
-                Common.error403(request, response);
-                return;
-            }
             switch (action) {
             case "/new":
                 Common.forwardToPage(Common.USER_INSERT_JSP, request, response);
@@ -97,32 +92,40 @@ public class UserServlet extends HttpServlet {
             case "/insert":
                 insertUser(request, response);
                 break;
-            case "/list":
-                listUsers(request, response, false);
-                break;
-            case "/search":
-                listUsers(request, response, true);
-                break;
-            case "/edit":
-                showEditForm(request, response);
-                break;
-            case "/update":
-                updateUser(request, response);
-                break;
-            case "/delete":
-                deleteUser(request, response);
-                break;
-            case "/detail":
-                detailUser(request, response);
-                break;
-            case "/passChange":
-                Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
-                break;
-            case "/changePassword":
-                changePassword(request, response);
-                break;
             default:
-                Common.error404(request, response);
+                if (role == 3) {
+                    Common.error403(request, response);
+                    return;
+                }
+                switch (action) {
+                case "/list":
+                    listUsers(request, response, false);
+                    break;
+                case "/search":
+                    listUsers(request, response, true);
+                    break;
+                case "/edit":
+                    showEditForm(request, response);
+                    break;
+                case "/update":
+                    updateUser(request, response);
+                    break;
+                case "/delete":
+                    deleteUser(request, response);
+                    break;
+                case "/detail":
+                    detailUser(request, response);
+                    break;
+                case "/passChange":
+                    Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
+                    break;
+                case "/changePassword":
+                    changePassword(request, response);
+                    break;
+                default:
+                    Common.error404(request, response);
+                    break;
+                }
                 break;
             }
         } catch (SQLException ex) {
@@ -162,12 +165,11 @@ public class UserServlet extends HttpServlet {
      */
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-        Object role = Common.getLoginUserRole(request);
+        int role = Common.getLoginUserRole(request);
         int id = Integer.parseInt(request.getParameter("id"));
         UserDTO user = userService.doGetUserById(id);
         int loginId = Common.getLoginUserId(request);
-        if (Common.isValidRole(role)
-                && (Integer.parseInt(role.toString()) == 0 || (user != null && user.getId() == loginId))) {
+        if (role != 3 && (role == 0 || (user != null && user.getId() == loginId))) {
             request.setAttribute("user", user);
             Common.forwardToPage(Common.USER_INSERT_JSP, request, response);
         } else {
@@ -195,7 +197,13 @@ public class UserServlet extends HttpServlet {
         newUser.setCreatedUserId(id);
         newUser.setCreatedUserId(id);
         userService.doInsertUser(newUser);
-        Common.redirectToPage("list", response);
+        int role = Common.getLoginUserRole(request);
+        if (role == 3) {
+            request.setAttribute("successMsg", "User Account created successfully!");
+            Common.forwardToPage(Common.LOGIN_JSP, request, response);
+        } else {
+            Common.redirectToPage("list", response);
+        }
     }
 
     /**
@@ -273,6 +281,12 @@ public class UserServlet extends HttpServlet {
             throws SQLException, IOException, ServletException {
         UserForm updatedUser = getUserParameters(request);
         userService.doUpdateUser(updatedUser);
+        if (updatedUser.getId() == Common.getLoginUserId(request)) {
+            HttpSession session = request.getSession();
+            session.setAttribute(Common.SESSION_USER_ID, updatedUser.getId());
+            session.setAttribute(Common.SESSION_USER_NAME, updatedUser.getName());
+            session.setAttribute(Common.SESSION_USER_ROLE, updatedUser.getRole());
+        }
         Common.redirectToPage("list", response);
     }
 
@@ -299,7 +313,7 @@ public class UserServlet extends HttpServlet {
             request.setAttribute("successMsg", "Change Password Successfully!");
             Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
         } else {
-            request.setAttribute("errorMsg", "Please Enter Correct Old Password!");
+            request.setAttribute("errorMsg", "Please enter correct old password!");
             Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
         }
     }

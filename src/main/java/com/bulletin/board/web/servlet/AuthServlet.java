@@ -152,7 +152,7 @@ public class AuthServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         session.invalidate();
-        request.setAttribute("logoutMsg", "You Have Successfully Logged Out!");
+        request.setAttribute("successMsg", "You aave successfully logged out!");
         Common.forwardToPage(Common.LOGIN_JSP, request, response);
     }
 }

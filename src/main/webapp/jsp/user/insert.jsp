@@ -77,22 +77,26 @@
 
           <fieldset class="form-group mb-3">
             <label class="fw-medium">Role</label><br>
+            <c:if
+              test="${sessionScope.userRole == 0}">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="role"
+                  ${user.role == 0 ? 'checked':'' } id="admin" value="0"
+                  required> <label class="form-check-label"
+                  for="admin">Admin</label>
+              </div>
+            </c:if>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="role"
-                ${user.role == 0 ? 'checked':'' } id="admin" value="0"
-                required> <label class="form-check-label"
-                for="admin">Admin</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="role"
-                ${user.role == 1? 'checked':'' } id="user" value="1">
-              <label class="form-check-label" for="user">User</label>
+                ${user.role == 1 || empty sessionScope.userRole || sessionScope.userRole == 1 ? 'checked':'' }
+                id="user" value="1"> <label
+                class="form-check-label" for="user">User</label>
             </div>
           </fieldset>
 
           <div class="row justify-content-center">
             <button type="submit" class="btn btn-primary col-2 mx-2">${user != null ? 'Update' : 'Add'}</button>
-            <a href="<%=request.getContextPath()%>/user/list"
+            <a href="<%=request.getContextPath()%>${empty sessionScope.userRole ? '/loginPage' : '/user/list'}"
               class="btn btn-dark col-2 mx-2">Back</a>
           </div>
 

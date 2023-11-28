@@ -81,10 +81,9 @@ public class PostServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getPathInfo();
-        HttpSession session = request.getSession();
-        Object role = session.getAttribute(Common.SESSION_USER_ROLE);
+        int role = Common.getLoginUserRole(request);
         try {
-            if (!Common.isValidRole(role)) {
+            if (role == 3) {
                 Common.error403(request, response);
                 return;
             }
@@ -166,12 +165,11 @@ public class PostServlet extends HttpServlet {
      */
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-        Object role = Common.getLoginUserRole(request);
+        int role = Common.getLoginUserRole(request);
         int id = Integer.parseInt(request.getParameter("id"));
         PostDTO post = postService.doGetPostById(id);
         int loginId = Common.getLoginUserId(request);
-        if (Common.isValidRole(role)
-                && (Integer.parseInt(role.toString()) == 0 || (post != null && post.getCreatedUserId() == loginId))) {
+        if (role != 3 && (role == 0 || (post != null && post.getCreatedUserId() == loginId))) {
             request.setAttribute("post", post);
             Common.forwardToPage(Common.POST_INSERT_JSP, request, response);
         } else {
@@ -398,7 +396,7 @@ public class PostServlet extends HttpServlet {
         for (PostForm post : posts) {
             postService.doInsertPost(post);
         }
-        request.setAttribute("successMsg", "Data are Successfully Uploaded!");
+        request.setAttribute("successMsg", "Data are successfully uploaded!");
         Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
     }
 
