@@ -171,6 +171,7 @@ public class UserServlet extends HttpServlet {
         int loginId = Common.getLoginUserId(request);
         if (role != 3 && (role == 0 || (user != null && user.getId() == loginId))) {
             request.setAttribute("user", user);
+            request.setAttribute("type", "edit");
             Common.forwardToPage(Common.USER_INSERT_JSP, request, response);
         } else {
             Common.error403(request, response);
@@ -196,6 +197,13 @@ public class UserServlet extends HttpServlet {
         int id = Common.getLoginUserId(request);
         newUser.setCreatedUserId(id);
         newUser.setCreatedUserId(id);
+        if (!newUser.getPassword().equals(newUser.getConfirmPassword())) {
+            request.setAttribute("user", newUser);
+            request.getSession().setAttribute("err", "Password and Confirm Password must be the same!");
+            Common.forwardToPage(Common.USER_INSERT_JSP, request, response);
+            request.getSession().removeAttribute("err");
+            return;
+        }
         userService.doInsertUser(newUser);
         int role = Common.getLoginUserRole(request);
         if (role == 3) {
@@ -311,17 +319,28 @@ public class UserServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         String oldPass = request.getParameter("oldPass");
         String newPass = request.getParameter("newPass");
+        String conNewPass = request.getParameter("conNewPass");
+        request.setAttribute("oldPass", oldPass);
+        request.setAttribute("newPass", newPass);
+        request.setAttribute("conNewPass", conNewPass);
+        if (!newPass.equals(conNewPass)) {
+            request.setAttribute("errConNewPass", "Password and Confirm Password must be the same!");
+            Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
+            return;
+        }
         UserDTO user = userService.doGetUserById(id);
         if (BCrypt.checkpw(oldPass, user.getPassword())) {
             userService.doChangePassword(id, newPass);
             request.getSession().setAttribute("successMsg", "Password change successfully!");
+            request.setAttribute("oldPass", "");
+            request.setAttribute("newPass", "");
+            request.setAttribute("conNewPass", "");
             Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
         } else {
-            request.getSession().setAttribute("errorMsg", "Please enter correct old password!");
+            request.setAttribute("errOldPass", "Please enter correct old password!");
             Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
         }
         request.getSession().removeAttribute("successMsg");
-        request.getSession().removeAttribute("errorMsg");
     }
 
     /**
@@ -361,6 +380,7 @@ public class UserServlet extends HttpServlet {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmPassword");
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
         int role = Integer.parseInt(request.getParameter("role"));
@@ -382,6 +402,6 @@ public class UserServlet extends HttpServlet {
                 Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
             }
         }
-        return new UserForm(id, fileName, name, email, password, phone, address, role, dob, id, id);
+        return new UserForm(id, fileName, name, email, password, confirmPassword, phone, address, role, dob, id, id);
     }
 }

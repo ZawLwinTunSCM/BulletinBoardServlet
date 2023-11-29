@@ -11,8 +11,8 @@
   <div
     class="container-fluid flex-grow-1 d-flex align-items-center justify-content-center">
     <div class="card col-md-4">
-      <div class="card-header">
-        <h2 class="text-center">Password Change</h2>
+      <div class="card-header text-center">
+        <h2 class="my-0">Password Change</h2>
       </div>
       <div class="card-body">
         <form
@@ -21,15 +21,23 @@
           <input type="hidden" name="id" value="${sessionScope.userId}" />
 
           <fieldset class="form-group mb-3">
-            <label class="fw-medium" for="title">Old Password</label> <input
-              type="password" class="form-control" name="oldPass"
+            <label class="fw-medium required" for="oldPass">Old Password</label> <input
+              type="password" class="form-control" name="oldPass" id="oldPass" value="${oldPass}"
+              required>
+              <span class="text-danger">${errOldPass}</span>
+          </fieldset>
+
+          <fieldset class="form-group mb-3">
+            <label class="fw-medium required" for="newPass">New Password</label> <input
+              type="password" class="form-control" name="newPass" id="newPass" value="${newPass}"
               required>
           </fieldset>
 
           <fieldset class="form-group mb-3">
-            <label class="fw-medium" for="title">New Password</label> <input
-              type="password" class="form-control" name="newPass"
+            <label class="fw-medium required" for="conNewPass">Confirm New Password</label> <input
+              type="password" class="form-control" name="conNewPass" id="conNewPass" value="${conNewPass}"
               required>
+              <span class="text-danger">${errConNewPass}</span>
           </fieldset>
 
           <div class="row justify-content-center">

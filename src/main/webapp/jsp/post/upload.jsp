@@ -12,7 +12,7 @@
     class="container-fluid flex-grow-1 d-flex align-items-center justify-content-center">
     <div class="card col-md-4">
       <div class="card-header text-center">
-        <h2>Post Upload</h2>
+        <h2 class="my-0">Post Upload</h2>
       </div>
       <div class="card-body">
         <form

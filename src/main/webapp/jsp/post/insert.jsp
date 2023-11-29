@@ -5,14 +5,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Post Register</title>
+<title>Post ${post != null ? 'Edit ' : 'Registration'}</title>
 </head>
 <body class="d-flex flex-column vh-100">
   <div
     class="container-fluid flex-grow-1 d-flex align-items-center justify-content-center">
     <div class="card col-md-4">
       <div class="card-header text-center">
-        <h2>${post != null ? 'Edit ' : 'Add New '}Post</h2>
+        <h2 class="my-0">${post != null ? 'Edit ' : 'Add New '}Post</h2>
       </div>
       <div class="card-body">
         <form
@@ -23,32 +23,39 @@
             <input type="hidden" name="id" value="${post.id}" />
           </c:if>
 
-          <fieldset class="form-group mb-3">
-            <label class="fw-medium" for="title">Title</label> <input
-              type="text" value="${post.title}" class="form-control"
-              name="title" id="title" required>
-          </fieldset>
-
-          <fieldset class="form-group mb-3">
-            <label class="fw-medium">Description</label>
-            <textarea class="form-control" name="description" required>${post.description}</textarea>
-          </fieldset>
-
-          <fieldset class="form-group mb-3">
-            <label class="fw-medium">Status</label><br>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="status"
-                ${post.status == 1 ? 'checked':'' } id="public"
-                value="1" required> <label
-                class="form-check-label" for="public">Public</label>
+          <div class="row mb-3 align-items-center">
+            <label class="fw-medium col-md-3 required" for="title">Title</label>
+            <div class="col-md-9">
+              <input type="text" value="${post.title}"
+                class="form-control" name="title" id="title" required>
             </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="status"
-                ${post.status == 0? 'checked':'' } id="private"
-                value="0"> <label class="form-check-label"
-                for="private">Private</label>
+          </div>
+
+          <div class="row mb-3 align-items-center">
+            <label class="fw-medium col-md-3 required" for="description">Description</label>
+            <div class="col-md-9">
+              <textarea class="form-control" name="description"
+                id="description" required>${post.description}</textarea>
             </div>
-          </fieldset>
+          </div>
+
+          <div class="row mb-3">
+            <label class="fw-medium col-md-3 required">Status</label>
+            <div class="col-md-9">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio"
+                  name="status" ${post.status == 1 ? 'checked':'' }
+                  id="public" value="1" required> <label
+                  class="form-check-label" for="public">Public</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio"
+                  name="status" ${post.status == 0? 'checked':'' }
+                  id="private" value="0"> <label
+                  class="form-check-label" for="private">Private</label>
+              </div>
+            </div>
+          </div>
 
           <div class="row justify-content-center">
             <button type="submit" class="btn btn-primary col-2 mx-2">${post != null ? 'Update' : 'Add'}</button>

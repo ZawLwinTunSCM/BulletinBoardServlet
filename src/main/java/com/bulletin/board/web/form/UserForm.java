@@ -60,6 +60,13 @@ public class UserForm {
      */
     private String password;
     /**
+     * <h2>confirmPassword</h2>
+     * <p>
+     * confirmPassword
+     * </p>
+     */
+    private String confirmPassword;
+    /**
      * <h2>phone</h2>
      * <p>
      * phone

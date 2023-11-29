@@ -10,7 +10,7 @@
 </head>
 <body class="d-flex flex-column vh-100">
   <div
-    class="container-fluid flex-grow-1 d-flex justify-content-center ${empty listUser && empty searchData ? 'align-items-center' : ''} pt-5">
+    class="container-fluid flex-grow-1 d-flex justify-content-center ${empty listUser && empty searchData ? 'align-items-center' : ''} pt-3">
     <c:choose>
       <c:when test="${empty listUser && empty searchData}">
         <div class="col-md-4 text-center">

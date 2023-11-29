@@ -10,9 +10,9 @@
 <body class="d-flex flex-column vh-100">
   <div
     class="container-fluid flex-grow-1 d-flex align-items-center justify-content-center">
-    <div class="card" style="width: 30%">
-      <div class="card-header bg-primary text-white">
-        <h2 class="text-center mb-0">User Detail</h2>
+    <div class="card" style="width: 40%">
+      <div class="card-header text-center">
+        <h2 class="my-0">User Detail</h2>
       </div>
       <div class="card-body">
         <div class="row mb-3 justify-content-center">
