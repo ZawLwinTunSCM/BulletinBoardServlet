@@ -15,12 +15,6 @@
         <h2 class="text-center">Password Change</h2>
       </div>
       <div class="card-body">
-        <c:if test="${errorMsg != null}">
-          <div class="alert alert-danger" id="errorMessage">${errorMsg}</div>
-        </c:if>
-        <c:if test="${successMsg != null}">
-          <div class="alert alert-success" id="successMessage">${successMsg}</div>
-        </c:if>
         <form
           action="${pageContext.request.contextPath}/user/changePassword"
           method="post">
@@ -40,6 +34,8 @@
 
           <div class="row justify-content-center">
             <button type="submit" class="btn btn-primary col-2 mx-2">Change</button>
+            <a href="<%=request.getContextPath()%>/user/list"
+              class="btn btn-dark col-2 mx-2">Back</a>
           </div>
 
         </form>

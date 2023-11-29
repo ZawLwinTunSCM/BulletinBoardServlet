@@ -195,6 +195,7 @@ public class PostServlet extends HttpServlet {
         newPost.setCreatedUserId(id);
         newPost.setUpdatedUserId(id);
         postService.doInsertPost(newPost);
+        request.getSession().setAttribute("successMsg", "Post created successfully!");
         Common.redirectToPage("list", response);
     }
 
@@ -234,6 +235,7 @@ public class PostServlet extends HttpServlet {
         request.setAttribute("type", isSearch ? "search" : "list");
         request.setAttribute("total", postService.doGetTotalCount(id, searchData));
         Common.forwardToPage(Common.POST_LIST_URL, request, response);
+        request.getSession().removeAttribute("successMsg");
     }
 
     /**
@@ -273,6 +275,7 @@ public class PostServlet extends HttpServlet {
         PostForm updatedPost = getPostParameters(request);
         updatedPost.setUpdatedUserId(Common.getLoginUserId(request));
         postService.doUpdatePost(updatedPost);
+        request.getSession().setAttribute("successMsg", "Post updated successfully!");
         Common.redirectToPage("list", response);
     }
 
@@ -291,6 +294,7 @@ public class PostServlet extends HttpServlet {
     private void deletePost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         postService.doDeletePost(id);
+        request.getSession().setAttribute("successMsg", "Post deleted successfully!");
         Common.redirectToPage("list", response);
     }
 
@@ -396,8 +400,9 @@ public class PostServlet extends HttpServlet {
         for (PostForm post : posts) {
             postService.doInsertPost(post);
         }
-        request.setAttribute("successMsg", "Data are successfully uploaded!");
+        request.getSession().setAttribute("successMsg", "Data are successfully uploaded!");
         Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
+        request.getSession().removeAttribute("successMsg");
     }
 
     /**
@@ -419,8 +424,10 @@ public class PostServlet extends HttpServlet {
         PostForm newPost = new PostForm();
         for (int j = 0; j < post.length; j++) {
             if (Common.isDataNullOrEmpty(post[j])) {
-                request.setAttribute("errorMsg", "Data is missing at row : " + (row + 1) + " column : " + (j + 1));
+                request.getSession().setAttribute("errorMsg",
+                        "Data is missing at row : " + (row + 1) + " column : " + (j + 1));
                 Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
+                request.getSession().removeAttribute("errorMsg");
                 return null;
             }
             setPostField(newPost, j, post[j]);

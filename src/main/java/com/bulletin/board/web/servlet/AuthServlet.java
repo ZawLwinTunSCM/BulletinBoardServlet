@@ -72,6 +72,7 @@ public class AuthServlet extends HttpServlet {
         switch (action) {
         case "/loginPage":
             Common.forwardToPage(Common.LOGIN_JSP, request, response);
+            request.getSession().removeAttribute("successMsg");
             break;
         case "/login":
             loginAction(request, response);
@@ -120,7 +121,7 @@ public class AuthServlet extends HttpServlet {
         String pass = request.getParameter("password");
         UserDTO user = userService.doGetUserByEmail(email);
         if (user == null) {
-            request.setAttribute("errorMsg", "User does not exist!");
+            request.getSession().setAttribute("errorMsg", "User does not exist!");
             Common.forwardToPage(Common.LOGIN_JSP, request, response);
         } else {
             if (BCrypt.checkpw(pass, user.getPassword())) {
@@ -130,10 +131,11 @@ public class AuthServlet extends HttpServlet {
                 session.setAttribute(Common.SESSION_USER_ROLE, user.getRole());
                 response.sendRedirect(request.getContextPath() + Common.LOGIN_POST_LIST_URL);
             } else {
-                request.setAttribute("errorMsg", "Wrong Email or Password!");
+                request.getSession().setAttribute("errorMsg", "Invalid email or Password!");
                 Common.forwardToPage(Common.LOGIN_JSP, request, response);
             }
         }
+        request.getSession().removeAttribute("errorMsg");
     }
 
     /**
@@ -152,7 +154,7 @@ public class AuthServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         session.invalidate();
-        request.setAttribute("successMsg", "You aave successfully logged out!");
-        Common.forwardToPage(Common.LOGIN_JSP, request, response);
+        request.getSession().setAttribute("successMsg", "You have successfully logged out!");
+        Common.redirectToPage("loginPage", response);
     }
 }

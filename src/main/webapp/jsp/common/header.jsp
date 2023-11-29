@@ -7,6 +7,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+<link href="${pageContext.request.contextPath}/resources/css/styles.css"
+  rel="stylesheet">
 <link
   href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
   rel="stylesheet"
@@ -29,40 +31,50 @@
   type="text/javascript"></script>
 <body>
   <header>
-    <nav class="navbar navbar-expand-md navbar-dark"
-      style="background-color: tomato">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary">
       <div class="container-fluid text-white">
-        <a class="navbar-brand" href="<%=request.getContextPath()%>/">
-          MTM Bulletin Board </a>
-        <c:if test="${not empty sessionScope.userName}">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a
-              class="nav-link me-5 text-white"
-              href="<%=request.getContextPath()%>/post/list">Posts</a></li>
-            <li class="nav-item"><a
-              class="nav-link me-5 text-white"
-              href="<%=request.getContextPath()%>/user/list">Users</a></li>
-            <li class="nav-item dropdown"><a
-              class="nav-link dropdown-toggle text-white" href="#"
-              id="navbarDropdown" role="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
-                ${sessionScope.userName} </a>
-              <ul class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="navbarDropdown">
-                <li><a
-                  class="me-5 text-dark text-decoration-none dropdown-item"
-                  href="<%=request.getContextPath()%>/user/passChange">Password
-                    Change</a></li>
-                <li><a
-                  class="me-5 text-dark text-decoration-none dropdown-item"
-                  href="<%=request.getContextPath()%>/auth/logout">Logout</a>
-                </li>
-              </ul></li>
-          </ul>
-        </c:if>
+        <div class="py-2 col-md-4">
+          <a class="navbar-brand py-2"
+            href="<%=request.getContextPath()%>/"> MTM Bulletin
+            Board </a>
+        </div>
+        <div id="msg" class="py-0 my-0 col-md-4 text-center">
+          <c:if test="${sessionScope.errorMsg != null}">
+            <div class="px-2 py-2 rounded" id="errorMsg">${sessionScope.errorMsg}</div>
+          </c:if>
+          <c:if test="${sessionScope.successMsg != null}">
+            <div class="px-2 py-2 rounded" id="successMsg">${sessionScope.successMsg}</div>
+          </c:if>
+        </div>
+        <div class="col-md-4 d-flex justify-content-end">
+          <c:if test="${not empty sessionScope.userName}">
+            <ul class="navbar-nav mb-2 mb-lg-0">
+              <li class="nav-item"><a
+                class="nav-link me-5 text-white"
+                href="<%=request.getContextPath()%>/post/list">Posts</a></li>
+              <li class="nav-item"><a
+                class="nav-link me-5 text-white"
+                href="<%=request.getContextPath()%>/user/list">Users</a></li>
+              <li class="nav-item dropdown"><a
+                class="nav-link dropdown-toggle text-white" href="#"
+                id="navbarDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                  ${sessionScope.userName} </a>
+                <ul class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdown">
+                  <li><a
+                    class="me-5 text-dark text-decoration-none dropdown-item"
+                    href="<%=request.getContextPath()%>/user/passChange">Password
+                      Change</a></li>
+                  <li><a
+                    class="me-5 text-dark text-decoration-none dropdown-item"
+                    href="<%=request.getContextPath()%>/auth/logout">Logout</a></li>
+                </ul></li>
+            </ul>
+          </c:if>
+        </div>
       </div>
     </nav>
   </header>
-
 </body>
 </html>

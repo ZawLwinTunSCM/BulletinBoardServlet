@@ -1,5 +1,5 @@
 window.onload = function() {
-	setInitialImage(); 
+	setInitialImage();
 };
 
 function addLink(id) {
@@ -43,6 +43,7 @@ function setInitialImage() {
 }
 
 $(document).ready(function() {
+	$('#msg').delay(5000).hide(0);
 	var total = $('#total').val();
 	var pageNum = $('#pageNum').val();
 	var type = $('#type').val();

@@ -15,12 +15,6 @@
         <h2>Post Upload</h2>
       </div>
       <div class="card-body">
-        <c:if test="${errorMsg != null}">
-          <div class="alert alert-danger" id="errorMessage">${errorMsg}</div>
-        </c:if>
-        <c:if test="${successMsg != null}">
-          <div class="alert alert-success" id="successMessage">${successMsg}</div>
-        </c:if>
         <form
           action="${pageContext.request.contextPath}/post/uploadPost"
           method="post" enctype="multipart/form-data">

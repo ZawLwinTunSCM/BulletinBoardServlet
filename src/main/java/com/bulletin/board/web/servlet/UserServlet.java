@@ -199,9 +199,11 @@ public class UserServlet extends HttpServlet {
         userService.doInsertUser(newUser);
         int role = Common.getLoginUserRole(request);
         if (role == 3) {
-            request.setAttribute("successMsg", "User Account created successfully!");
+            request.getSession().setAttribute("successMsg", "User Account is created successfully!");
             Common.forwardToPage(Common.LOGIN_JSP, request, response);
+            request.getSession().removeAttribute("successMsg");
         } else {
+            request.getSession().setAttribute("successMsg", "User Account is created successfully!");
             Common.redirectToPage("list", response);
         }
     }
@@ -241,6 +243,7 @@ public class UserServlet extends HttpServlet {
         request.setAttribute("type", isSearch ? "search" : "list");
         request.setAttribute("total", userService.doGetTotalCount(searchData));
         Common.forwardToPage(Common.USER_LIST_URL, request, response);
+        request.getSession().removeAttribute("successMsg");
     }
 
     /**
@@ -287,6 +290,7 @@ public class UserServlet extends HttpServlet {
             session.setAttribute(Common.SESSION_USER_NAME, updatedUser.getName());
             session.setAttribute(Common.SESSION_USER_ROLE, updatedUser.getRole());
         }
+        request.getSession().setAttribute("successMsg", "User updated successfully!");
         Common.redirectToPage("list", response);
     }
 
@@ -310,12 +314,14 @@ public class UserServlet extends HttpServlet {
         UserDTO user = userService.doGetUserById(id);
         if (BCrypt.checkpw(oldPass, user.getPassword())) {
             userService.doChangePassword(id, newPass);
-            request.setAttribute("successMsg", "Change Password Successfully!");
+            request.getSession().setAttribute("successMsg", "Password change successfully!");
             Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
         } else {
-            request.setAttribute("errorMsg", "Please enter correct old password!");
+            request.getSession().setAttribute("errorMsg", "Please enter correct old password!");
             Common.forwardToPage(Common.USER_PASS_CHANGE_URL, request, response);
         }
+        request.getSession().removeAttribute("successMsg");
+        request.getSession().removeAttribute("errorMsg");
     }
 
     /**
@@ -333,6 +339,7 @@ public class UserServlet extends HttpServlet {
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         userService.doDeleteUser(id);
+        request.getSession().setAttribute("successMsg", "User deleted successfully!");
         Common.redirectToPage("list", response);
     }
 
@@ -374,7 +381,6 @@ public class UserServlet extends HttpServlet {
                 Path filePath = Paths.get(uploadDirectory, fileName);
                 Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
             }
-
         }
         return new UserForm(id, fileName, name, email, password, phone, address, role, dob, id, id);
     }
