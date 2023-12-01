@@ -36,11 +36,17 @@ public class PostServiceImpl implements PostService {
      * </p>
      * 
      * @param postForm PostForm
+     * @return boolean
      */
     @Override
-    public void doInsertPost(PostForm postForm) {
+    public boolean doInsertPost(PostForm postForm) {
         Post post = new Post(postForm);
-        postDao.dbInsertPost(post);
+        if (postDao.dbisDuplicatePost(0, post.getTitle())) {
+            return true;
+        } else {
+            postDao.dbInsertPost(post);
+            return false;
+        }
     }
 
     /**
@@ -106,17 +112,23 @@ public class PostServiceImpl implements PostService {
      * </p>
      * 
      * @param postForm PostForm
+     * @return boolean
      */
     @Override
-    public void doUpdatePost(PostForm postForm) {
+    public boolean doUpdatePost(PostForm postForm) {
         PostDTO postDTO = new PostDTO(postDao.dbGetPostById(postForm.getId()));
-        postDTO.setTitle(postForm.getTitle());
-        postDTO.setDescription(postForm.getDescription());
-        postDTO.setStatus(postForm.getStatus());
-        postDTO.setUpdatedUserId(postForm.getUpdatedUserId());
-        Post post = new Post(new PostForm(postDTO));
-        post.setUpdatedAt(new Date(System.currentTimeMillis()));
-        postDao.dbUpdatePost(post);
+        if (postDao.dbisDuplicatePost(postDTO.getId(), postForm.getTitle())) {
+            return true;
+        } else {
+            postDTO.setTitle(postForm.getTitle());
+            postDTO.setDescription(postForm.getDescription());
+            postDTO.setStatus(postForm.getStatus());
+            postDTO.setUpdatedUserId(postForm.getUpdatedUserId());
+            Post post = new Post(new PostForm(postDTO));
+            post.setUpdatedAt(new Date(System.currentTimeMillis()));
+            postDao.dbUpdatePost(post);
+            return false;
+        }
     }
 
     /**

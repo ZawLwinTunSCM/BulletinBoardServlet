@@ -106,4 +106,16 @@ public interface PostDao {
      * @return String
      */
     public String dbGetAuthor(int id);
+
+    /**
+     * <h2>dbisDuplicatePost</h2>
+     * <p>
+     * Check if the post is ready existed or not
+     * </p>
+     *
+     * @param id    int
+     * @param title String
+     * @return boolean
+     */
+    public boolean dbisDuplicatePost(int id, String title);
 }

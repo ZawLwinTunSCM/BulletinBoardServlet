@@ -28,9 +28,9 @@
           <div class="text-center">
             <button type="submit" class="btn btn-primary mx-2">Upload</button>
             <a
-              href="<%=request.getContextPath()%>/post/downloadTemplate"
+              href="${pageContext.request.contextPath}/post/downloadTemplate"
               class="btn btn-primary">Download Template</a> <a
-              href="<%=request.getContextPath()%>/post/list"
+              href="${pageContext.request.contextPath}/post/list"
               class="btn btn-dark mx-2">Back</a>
           </div>
         </form>

@@ -17,7 +17,7 @@
       <div class="card-body">
         <div class="row mb-3 justify-content-center">
           <img alt="Profile"
-            src="<%=request.getContextPath()%>/resources/img/${user.profile}"
+            src="${pageContext.request.contextPath}/resources/img/${user.profile}"
             class="w-50">
         </div>
         <div class="row">
@@ -56,7 +56,7 @@
           <a href="edit?id=${user.id}"
             class="btn btn-primary mx-3">Edit</a>
         </c:if>
-        <a href="<%=request.getContextPath()%>/user/list"
+        <a href="${pageContext.request.contextPath}/user/list"
           class="btn btn-dark mx-3">Back</a>
       </div>
     </div>

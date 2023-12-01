@@ -57,7 +57,8 @@ function redirectToPage(link) {
 $(document).ready(function() {
 	$('#msg').delay(5000).hide(0);
 
-	[...document.querySelectorAll('[data-bs-toggle="tooltip"]')].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+	[...document.querySelectorAll('[data-bs-toggle="tooltip"]')].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
 
 	var total = $('#total').val();
 	var pageNum = $('#pageNum').val();

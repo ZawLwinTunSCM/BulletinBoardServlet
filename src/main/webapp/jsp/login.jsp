@@ -37,7 +37,7 @@
             <div class="text-center">
               <button type="submit"
                 class="btn btn-primary mx-2 mb-2">Login</button><br>
-              <a href="<%=request.getContextPath()%>/user/new"
+              <a href="${pageContext.request.contextPath}/user/new"
                 class="text-decoration-none"> Create Account <i
                 class="fa-solid fa-user-plus"></i>
               </a>

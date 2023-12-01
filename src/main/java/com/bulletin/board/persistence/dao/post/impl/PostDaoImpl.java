@@ -115,6 +115,13 @@ public class PostDaoImpl implements PostDao {
      * </p>
      */
     private static final String GET_AUTHOR = "SELECT user.name FROM post JOIN user ON post.created_user_id=user.id WHERE post.created_user_id = ?";
+    /**
+     * <h2>IS_DUPLICATED_POST</h2>
+     * <p>
+     * IS_DUPLICATED_POST
+     * </p>
+     */
+    private static String IS_DUPLICATE_POST = "SELECT count(*) as count FROM post WHERE post.title = ?";
 
     /**
      * <h2>getConnection</h2>
@@ -373,5 +380,35 @@ public class PostDaoImpl implements PostDao {
             e.printStackTrace();
         }
         return author;
+    }
+
+    /**
+     * <h2>dbisDuplicatePost</h2>
+     * <p>
+     * Check if the post is ready existed or not
+     * </p>
+     * 
+     * @param id    int
+     * @param title String
+     * @return boolean
+     */
+    @Override
+    public boolean dbisDuplicatePost(int id, String title) {
+        try (Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(id != 0 ? IS_DUPLICATE_POST + " AND id != ?" : IS_DUPLICATE_POST)) {
+            preparedStatement.setString(1, title);
+            if (id != 0) {
+                preparedStatement.setInt(2, id);
+            }
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int titleCount = rs.getInt("count");
+                return titleCount > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

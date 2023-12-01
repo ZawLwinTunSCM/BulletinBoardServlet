@@ -35,7 +35,7 @@
       <div class="container-fluid text-white">
         <div class="py-2 col-md-4">
           <a class="navbar-brand py-2"
-            href="<%=request.getContextPath()%>/"> MTM Bulletin
+            href="${pageContext.request.contextPath}/"> MTM Bulletin
             Board </a>
         </div>
         <div id="msg" class="py-0 my-0 col-md-4 text-center">
@@ -51,10 +51,10 @@
             <ul class="navbar-nav mb-2 mb-lg-0">
               <li class="nav-item"><a
                 class="nav-link me-5 text-white"
-                href="<%=request.getContextPath()%>/post/list">Posts</a></li>
+                href="${pageContext.request.contextPath}/post/list">Posts</a></li>
               <li class="nav-item"><a
                 class="nav-link me-5 text-white"
-                href="<%=request.getContextPath()%>/user/list">Users</a></li>
+                href="${pageContext.request.contextPath}/user/list">Users</a></li>
               <li class="nav-item dropdown"><a
                 class="nav-link dropdown-toggle text-white" href="#"
                 id="navbarDropdown" role="button"
@@ -64,11 +64,11 @@
                   aria-labelledby="navbarDropdown">
                   <li><a
                     class="me-5 text-dark text-decoration-none dropdown-item"
-                    href="<%=request.getContextPath()%>/user/passChange">Password
+                    href="${pageContext.request.contextPath}/user/passChange">Password
                       Change</a></li>
                   <li><a
                     class="me-5 text-dark text-decoration-none dropdown-item"
-                    href="<%=request.getContextPath()%>/auth/logout">Logout</a></li>
+                    href="${pageContext.request.contextPath}/auth/logout">Logout</a></li>
                 </ul></li>
             </ul>
           </c:if>

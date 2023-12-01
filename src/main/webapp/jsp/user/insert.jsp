@@ -22,7 +22,7 @@
           <c:if test="${type == 'edit' }">
             <input type="hidden" name="id" value="${user.id}" />
             <input type="hidden" id="img" name="img"
-              value="<%=request.getContextPath()%>/resources/img/${user.profile}" />
+              value="${pageContext.request.contextPath}/resources/img/${user.profile}" />
           </c:if>
 
 
@@ -32,7 +32,7 @@
               <div id="image-container" class="text-center">
                 <img id="image-preview" class="w-100 h-100"
                   alt="Image Preview"
-                  src="<%=request.getContextPath()%>/resources/img/profile.png">
+                  src="${pageContext.request.contextPath}/resources/img/profile.png">
               </div>
 
             </div>
@@ -119,7 +119,7 @@
           <div class="text-center">
             <button type="submit" class="btn btn-primary mx-2">${type == 'edit' ? 'Update' : 'Add'}</button>
             <a
-              href="<%=request.getContextPath()%>${empty sessionScope.userRole ? '/loginPage' : '/user/list'}"
+              href="${pageContext.request.contextPath}${empty sessionScope.userRole ? '/loginPage' : '/user/list'}"
               class="btn btn-dark mx-2">Back</a>
           </div>
 

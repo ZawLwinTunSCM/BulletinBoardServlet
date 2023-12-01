@@ -46,7 +46,7 @@
           <a href="edit?id=${post.id}"
             class="btn btn-primary mx-3">Edit</a>
         </c:if>
-        <a href="<%=request.getContextPath()%>/post/list"
+        <a href="${pageContext.request.contextPath}/post/list"
           class="btn btn-dark mx-3">Back</a>
       </div>
     </div>

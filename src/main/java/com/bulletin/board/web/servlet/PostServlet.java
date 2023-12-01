@@ -124,6 +124,9 @@ public class PostServlet extends HttpServlet {
             case "/uploadPost":
                 uploadPost(request, response);
                 break;
+            case "/isDuplicatePost":
+                isDuplicatePost(request, response);
+                break;
             default:
                 Common.error404(request, response);
                 break;
@@ -171,6 +174,7 @@ public class PostServlet extends HttpServlet {
         int loginId = Common.getLoginUserId(request);
         if (role != 3 && (role == 0 || (post != null && post.getCreatedUserId() == loginId))) {
             request.setAttribute("post", post);
+            request.setAttribute("type", "edit");
             Common.forwardToPage(Common.POST_INSERT_JSP, request, response);
         } else {
             Common.error403(request, response);
@@ -188,15 +192,23 @@ public class PostServlet extends HttpServlet {
      * @throws SQLException
      * @throws IOException
      * @return void
+     * @throws ServletException
      */
-    private void insertPost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+    private void insertPost(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException {
         PostForm newPost = getPostParameters(request);
         int id = Common.getLoginUserId(request);
         newPost.setCreatedUserId(id);
         newPost.setUpdatedUserId(id);
-        postService.doInsertPost(newPost);
-        request.getSession().setAttribute("successMsg", "Post created successfully!");
-        Common.redirectToPage("list", response);
+        boolean isDuplicateTitle = postService.doInsertPost(newPost);
+        if (isDuplicateTitle) {
+            request.setAttribute("post", newPost);
+            request.setAttribute("err", "Post is already uploaded.");
+            Common.forwardToPage(Common.POST_INSERT_JSP, request, response);
+        } else {
+            request.getSession().setAttribute("successMsg", "Post created successfully!");
+            Common.redirectToPage("list", response);
+        }
     }
 
     /**
@@ -289,13 +301,22 @@ public class PostServlet extends HttpServlet {
      * @throws SQLException
      * @throws IOException
      * @return void
+     * @throws ServletException
      */
-    private void updatePost(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+    private void updatePost(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException {
         PostForm updatedPost = getPostParameters(request);
         updatedPost.setUpdatedUserId(Common.getLoginUserId(request));
-        postService.doUpdatePost(updatedPost);
-        request.getSession().setAttribute("successMsg", "Post updated successfully!");
-        Common.redirectToPage("list", response);
+        boolean isDuplicateTitle = postService.doUpdatePost(updatedPost);
+        if (isDuplicateTitle) {
+            request.setAttribute("post", updatedPost);
+            request.setAttribute("type", "edit");
+            request.setAttribute("err", "Post is already uploaded.");
+            Common.forwardToPage(Common.POST_INSERT_JSP, request, response);
+        } else {
+            request.getSession().setAttribute("successMsg", "Post created successfully!");
+            Common.redirectToPage("list", response);
+        }
     }
 
     /**
@@ -422,11 +443,23 @@ public class PostServlet extends HttpServlet {
             posts.add(newPost);
         }
         for (PostForm post : posts) {
-            postService.doInsertPost(post);
+            boolean isDuplicateTitle = postService.doInsertPost(post);
+            if (isDuplicateTitle) {
+                request.getSession().setAttribute("errorMsg",
+                        "Post(Title : " + post.getTitle() + ") is already uploaded.");
+                Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
+                request.getSession().removeAttribute("errorMsg");
+                return;
+            }
         }
         request.getSession().setAttribute("successMsg", "Data are successfully uploaded!");
         Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
         request.getSession().removeAttribute("successMsg");
+    }
+
+    private boolean isDuplicatePost(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException {
+        return true;
     }
 
     /**

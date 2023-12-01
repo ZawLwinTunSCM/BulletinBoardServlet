@@ -73,7 +73,7 @@ a::hover {
       Something went wrong. We're <i>looking</i> to see what happened.
     </p>
     <a
-      href="<%=request.getContextPath()%>${empty sessionScope.userId ? '/auth/loginPage' : '/post/list' }">
+      href="${pageContext.request.contextPath}${empty sessionScope.userId ? '/auth/loginPage' : '/post/list' }">
       Go Back </a>
   </div>
   <script type="text/javascript">

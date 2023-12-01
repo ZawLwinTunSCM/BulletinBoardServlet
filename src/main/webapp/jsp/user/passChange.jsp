@@ -42,7 +42,7 @@
 
           <div class="text-center">
             <button type="submit" class="btn btn-primary mx-2">Change</button>
-            <a href="<%=request.getContextPath()%>/user/list"
+            <a href="${pageContext.request.contextPath}/user/list"
               class="btn btn-dark mx-2">Back</a>
           </div>
 

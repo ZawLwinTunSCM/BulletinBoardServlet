@@ -22,9 +22,9 @@ public interface PostService {
      * </p>
      *
      * @param postForm PostForm
-     * @return void
+     * @return boolean
      */
-    public void doInsertPost(PostForm postForm);
+    public boolean doInsertPost(PostForm postForm);
 
     /**
      * <h2>doGetAllPosts</h2>
@@ -70,9 +70,9 @@ public interface PostService {
      * </p>
      *
      * @param post PostForm
-     * @return void
+     * @return boolean
      */
-    public void doUpdatePost(PostForm post);
+    public boolean doUpdatePost(PostForm post);
 
     /**
      * <h2>doDeletePost</h2>

@@ -15,7 +15,7 @@
       <c:when test="${empty listUser && empty searchData}">
         <div class="col-md-4 text-center">
           <h3>No New User.</h3>
-          <a href="<%=request.getContextPath()%>/user/new"
+          <a href="${pageContext.request.contextPath}/user/new"
             class="btn btn-primary">Add New User</a>
         </div>
       </c:when>
@@ -25,7 +25,7 @@
           <hr>
           <div class="row mt-3">
             <div class="col-md-4 d-flex justify-content-between">
-              <a href="<%=request.getContextPath()%>/user/new"
+              <a href="${pageContext.request.contextPath}/user/new"
                 class="btn btn-primary">Add New User</a>
             </div>
             <div class="col-md-4"></div>
@@ -52,7 +52,7 @@
           <hr>
           <div class="row mt-3">
             <div class="col-md-4 d-flex justify-content-between">
-              <a href="<%=request.getContextPath()%>/user/new"
+              <a href="${pageContext.request.contextPath}/user/new"
                 class="btn btn-primary">Add New User</a>
             </div>
             <div class="col-md-4"></div>
@@ -84,7 +84,7 @@
                   style="vertical-align: middle; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                   <td>${loop.count}</td>
                   <td class="text-truncate"><a
-                    href="<%=request.getContextPath()%>/user/detail?id=${user.id}">
+                    href="${pageContext.request.contextPath}/user/detail?id=${user.id}">
                       ${user.name}</a></td>
                   <td class="text-truncate">${user.email}</td>
                   <td>${user.dob}</td>

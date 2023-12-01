@@ -112,7 +112,7 @@
         are looking does not exist, have been removed, name changed or
         is temporarily unavailable.</p>
       <a
-        href="<%=request.getContextPath()%>${empty sessionScope.userId ? '/auth/loginPage' : '/post/list' }">
+        href="${pageContext.request.contextPath}${empty sessionScope.userId ? '/auth/loginPage' : '/post/list' }">
         Go Back </a>
     </div>
   </div>

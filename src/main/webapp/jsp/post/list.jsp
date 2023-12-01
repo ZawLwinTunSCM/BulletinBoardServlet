@@ -15,9 +15,9 @@
       <c:when test="${empty listPost && empty searchData}">
         <div class="col-md-4 text-center">
           <h3>No New Post.</h3>
-          <a href="<%=request.getContextPath()%>/post/new"
+          <a href="${pageContext.request.contextPath}/post/new"
             class="btn btn-primary mx-3">Add New Post</a> <a
-            href="<%=request.getContextPath()%>/post/upload"
+            href="${pageContext.request.contextPath}/post/upload"
             class="btn btn-primary mx-3">Upload</a>
         </div>
       </c:when>

@@ -5,28 +5,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Post ${post != null ? 'Edit ' : 'Registration'}</title>
+<title>Post ${type == 'edit' ? 'Edit ' : 'Registration'}</title>
 </head>
 <body class="d-flex flex-column vh-100">
   <div
     class="container-fluid flex-grow-1 d-flex align-items-center justify-content-center">
     <div class="card col-md-4">
       <div class="card-header text-center">
-        <h2 class="my-0">${post != null ? 'Edit ' : 'Add New '}Post</h2>
+        <h2 class="my-0">${type == 'edit' ? 'Edit ' : 'Add New '}Post</h2>
       </div>
       <div class="card-body">
         <form
-          action="${pageContext.request.contextPath}/post/${post != null ? 'update' : 'insert'}"
+          action="${pageContext.request.contextPath}/post/${type == 'edit' ? 'update' : 'insert'}"
           method="post">
 
-          <c:if test="${post != null}">
+          <c:if test="${type == 'edit'}">
             <input type="hidden" name="id" value="${post.id}" />
           </c:if>
 
           <div class="mb-3 align-items-center">
             <label class="fw-medium required" for="title">Title</label>
             <input type="text" value="${post.title}"
-              class="form-control" name="title" id="title" required>
+              class="form-control" name="title" id="title" required><span
+                  class="text-danger">${err}</span>
           </div>
 
           <div class="mb-3 align-items-center">
@@ -52,8 +53,8 @@
           </div>
 
           <div class="text-center">
-            <button type="submit" class="btn btn-primary mx-2">${post != null ? 'Update' : 'Add'}</button>
-            <a href="<%=request.getContextPath()%>/post/list"
+            <button type="submit" class="btn btn-primary mx-2">${type == 'edit' ? 'Update' : 'Add'}</button>
+            <a href="${pageContext.request.contextPath}/post/list"
               class="btn btn-dark mx-2">Back</a>
           </div>
 
