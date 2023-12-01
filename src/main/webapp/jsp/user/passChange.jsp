@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login</title>
+<title>Password Change</title>
 </head>
 <body class="d-flex flex-column vh-100">
   <div

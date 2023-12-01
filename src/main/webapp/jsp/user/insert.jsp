@@ -10,7 +10,7 @@
 <body class="d-flex flex-column vh-100">
   <div
     class="container-fluid flex-grow-1 d-flex align-items-center justify-content-center my-3">
-    <div class="card col-md-4">
+    <div class="card col-md-8">
       <div class="card-header text-center">
         <h2 class="my-0">${type == 'edit' ? 'Edit ' : 'Add New '}User</h2>
       </div>
@@ -25,14 +25,19 @@
               value="<%=request.getContextPath()%>/resources/img/${user.profile}" />
           </c:if>
 
-          <div id="image-container" class="text-center mb-3"
-            style="display: none">
-            <img id="image-preview" class="w-25" alt="Image Preview">
-          </div>
+
 
           <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3 required" for="profile">Profile</label>
-            <div class="col-md-9">
+            <div class="col-md-6 d-flex justify-content-center">
+              <div id="image-container" class="text-center">
+                <img id="image-preview" class="w-100 h-100"
+                  alt="Image Preview"
+                  src="<%=request.getContextPath()%>/resources/img/profile.png">
+              </div>
+
+            </div>
+            <div class="col-md-6">
+              <label class="fw-medium required" for="profile">Profile</label>
               <input type="file" class="form-control" id="profile"
                 accept="image/*" onchange="previewImage()"
                 value="${user.profile}" name="profile"
@@ -40,79 +45,60 @@
             </div>
           </div>
 
-          <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3 required" for="name">Name</label>
-            <div class="col-md-9">
-              <input type="text" value="${user.name}"
-                class="form-control" name="name" id="name" required>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="fw-medium required" for="name">Name</label><input
+                type="text" value="${user.name}" class="form-control"
+                name="name" id="name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="fw-medium" for="phone">Phone</label> <input
+                type="number" value="${user.phone}" class="form-control"
+                name="phone" id="phone" oninput="validatePhoneNumber()">
             </div>
           </div>
 
-          <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3 required" for="email">Email</label>
-            <div class="col-md-9">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="fw-medium required" for="email">Email</label>
               <input type="email" value="${user.email}"
                 class="form-control" name="email" id="email" required>
+            </div>
+            <div class="col-md-6">
+              <label class="fw-medium" for="address">Address</label> <input
+                type="text" value="${user.address}" class="form-control"
+                name="address" id="address">
             </div>
           </div>
 
           <c:if test="${type != 'edit'}">
-            <div class="row mb-3 align-items-center">
-              <label class="fw-medium col-md-3 required" for="password">Password</label>
-              <div class="col-md-9">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="fw-medium required" for="password">Password</label>
                 <input type="password" class="form-control"
                   value="${user.password}" name="password" id="password"
                   required>
               </div>
-            </div>
-
-            <div class="row align-items-center">
-              <label class="fw-medium col-md-3 required"
-                for="confirmPassword">Confirm Password</label>
-              <div class="col-md-9">
-                <input type="password" class="form-control"
+              <div class="col-md-6">
+                <label class="fw-medium required" for="confirmPassword">Confirm
+                  Password</label> <input type="password" class="form-control"
                   value="${user.confirmPassword}" name="confirmPassword"
-                  id="confirmPassword" required>
-              </div>
-            </div>
-            <div class="row mb-3 align-items-center">
-              <div class="col-md-3"></div>
-              <div class="col-md-9">
-                <span class="text-danger">${err}</span>
+                  id="confirmPassword" required> <span
+                  class="text-danger">${err}</span>
               </div>
             </div>
           </c:if>
 
-          <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3" for="phone">Phone</label>
-            <div class="col-md-9">
-              <input type="number" value="${user.phone}"
-                class="form-control" name="phone" id="phone"
-                oninput="validatePhoneNumber()">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="fw-medium" for="dob"
+                data-bs-toggle="tooltip" data-bs-placement="left"
+                data-bs-title="Date of Birth">DOB</label> <input
+                type="date" value="${user.dob}" class="form-control"
+                name="dob" id="dob">
             </div>
-          </div>
-
-          <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3" for="address">Address</label>
-            <div class="col-md-9">
-              <input type="text" value="${user.address}"
-                class="form-control" name="address" id="address">
-            </div>
-          </div>
-
-          <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3" for="dob"
-              data-bs-toggle="tooltip" data-bs-placement="left"
-              data-bs-title="Date of Birth">DOB</label>
-            <div class="col-md-9">
-              <input type="date" value="${user.dob}"
-                class="form-control" name="dob" id="dob">
-            </div>
-          </div>
-
-          <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3 required">Role</label>
-            <div class="col-md-9">
+            <div class="col-md-6">
+              <label class="fw-medium required mb-2">Role</label><br>
               <c:if test="${sessionScope.userRole == 0}">
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio"

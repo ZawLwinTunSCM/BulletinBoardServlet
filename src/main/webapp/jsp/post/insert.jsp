@@ -23,37 +23,31 @@
             <input type="hidden" name="id" value="${post.id}" />
           </c:if>
 
-          <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3 required" for="title">Title</label>
-            <div class="col-md-9">
-              <input type="text" value="${post.title}"
-                class="form-control" name="title" id="title" required>
-            </div>
+          <div class="mb-3 align-items-center">
+            <label class="fw-medium required" for="title">Title</label>
+            <input type="text" value="${post.title}"
+              class="form-control" name="title" id="title" required>
           </div>
 
-          <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3 required" for="description">Description</label>
-            <div class="col-md-9">
-              <textarea class="form-control" name="description"
-                id="description" required>${post.description}</textarea>
-            </div>
+          <div class="mb-3 align-items-center">
+            <label class="fw-medium required" for="description">Description</label>
+            <textarea class="form-control" name="description"
+              id="description" required>${post.description}</textarea>
           </div>
 
-          <div class="row mb-3">
-            <label class="fw-medium col-md-3 required">Status</label>
-            <div class="col-md-9">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio"
-                  name="status" ${post.status == 1 ? 'checked':'' }
-                  id="public" value="1" required> <label
-                  class="form-check-label" for="public">Public</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio"
-                  name="status" ${post.status == 0? 'checked':'' }
-                  id="private" value="0"> <label
-                  class="form-check-label" for="private">Private</label>
-              </div>
+          <div class="form-group mb-3">
+            <label class="fw-medium required">Status</label><br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="status"
+                ${post.status == 1 ? 'checked':'' } id="public"
+                value="1" required> <label
+                class="form-check-label" for="public">Public</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="status"
+                ${post.status == 0? 'checked':'' } id="private"
+                value="0"> <label class="form-check-label"
+                for="private">Private</label>
             </div>
           </div>
 

@@ -27,13 +27,11 @@ function previewImage() {
 
 		reader.onload = function(e) {
 			preview.src = e.target.result;
-			container.style.display = 'block';
 		};
 
 		reader.readAsDataURL(input.files[0]);
 	} else {
-		preview.src = '';
-		container.style.display = 'none'; // Hide the image container if no file selected
+		preview.src = "/ServletBulletinBoard/resources/img/profile.png";
 	}
 }
 
@@ -46,10 +44,8 @@ function setInitialImage() {
 
 		if (img) {
 			preview.src = img.value;
-			container.style.display = 'block';
 		} else {
-			preview.src = '';
-			container.style.display = 'none';
+			preview.src = "/ServletBulletinBoard/resources/img/profile.png";
 		}
 	}
 }
