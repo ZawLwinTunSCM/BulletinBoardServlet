@@ -70,10 +70,9 @@
             <thead>
               <tr>
                 <th class="col-1">No.</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Date of Birth</th>
+                <th class="col-2">Name</th>
+                <th class="col-3">Email</th>
+                <th class="col-2">Date of Birth</th>
                 <th>Role</th>
                 <th class="text-center col-3">Actions</th>
               </tr>
@@ -87,7 +86,6 @@
                     href="<%=request.getContextPath()%>/user/detail?id=${user.id}">
                       ${user.name}</a></td>
                   <td class="text-truncate">${user.email}</td>
-                  <td class="text-truncate">${user.phone}</td>
                   <td>${user.dob}</td>
                   <td>${user.role == 0 ? 'Admin' : 'User'}</td>
                   <td class="d-flex justify-content-between"><a

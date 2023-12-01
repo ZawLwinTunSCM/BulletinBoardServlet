@@ -28,7 +28,7 @@ function previewImage() {
 
 function setInitialImage() {
 	var img = document.getElementById('img');
-	var imgName=img.value.split("/")[4];
+	var imgName = img.value.split("/")[4];
 	if (imgName != "") {
 		var preview = document.getElementById('image-preview');
 		var container = document.getElementById('image-container');
@@ -43,6 +43,10 @@ function setInitialImage() {
 	}
 }
 
+function redirectToPage(link) {
+	window.location.href = link;
+}
+
 $(document).ready(function() {
 	$('#msg').delay(5000).hide(0);
 
@@ -50,11 +54,11 @@ $(document).ready(function() {
 
 	var total = $('#total').val();
 	var pageNum = $('#pageNum').val();
+	var limit = $('#limit').val();
 	var type = $('#type').val();
 	var pagination = new Pagination({
 		container: $("#pagination"),
-		pageClickUrl: type + "?pageNumber={{page}}",
-		maxVisibleElements: 9,
+		pageClickUrl: type + "?pageNumber={{page}}"
 	});
-	pagination.make(total, 10, pageNum);
+	pagination.make(total, limit, pageNum);
 });

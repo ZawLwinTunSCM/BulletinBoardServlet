@@ -10,7 +10,7 @@
 </head>
 <body class="d-flex flex-column vh-100">
   <div
-    class="container-fluid flex-grow-1 d-flex justify-content-center ${empty listPost && empty searchData ? 'align-items-center' : ''} pt-3">
+    class="container-fluid flex-grow-1 d-flex justify-content-center ${empty listPost && empty searchData ? 'align-items-center ' : ''}py-3">
     <c:choose>
       <c:when test="${empty listPost && empty searchData}">
         <div class="col-md-4 text-center">
@@ -27,11 +27,11 @@
           <hr>
           <div class="row mt-3">
             <div class="col-md-4 d-flex justify-content-between">
-              <a href="<%=request.getContextPath()%>/post/new"
+              <a href="${pageContext.request.contextPath}/post/new"
                 class="btn btn-primary">Add New Post</a> <a
-                href="<%=request.getContextPath()%>/post/upload"
+                href="${pageContext.request.contextPath}/post/upload"
                 class="btn btn-primary">Upload</a> <a
-                href="<%=request.getContextPath()%>/post/download"
+                href="${pageContext.request.contextPath}/post/download"
                 class="btn btn-primary">Download</a>
             </div>
             <div class="col-md-4"></div>
@@ -52,16 +52,17 @@
         <input type="hidden" id="total" value="${total}">
         <input type="hidden" id="pageNum" value="${pageNum}">
         <input type="hidden" id="type" value="${type}">
+        <input type="hidden" id="limit" value="${limit}">
         <div class="col-md-8">
           <h3 class="text-center">List of Posts</h3>
           <hr>
           <div class="row mt-3">
             <div class="col-md-4 d-flex justify-content-between">
-              <a href="<%=request.getContextPath()%>/post/new"
+              <a href="${pageContext.request.contextPath}/post/new"
                 class="btn btn-primary">Add New Post</a> <a
-                href="<%=request.getContextPath()%>/post/upload"
+                href="${pageContext.request.contextPath}/post/upload"
                 class="btn btn-primary">Upload</a><a
-                href="<%=request.getContextPath()%>/post/download"
+                href="${pageContext.request.contextPath}/post/download"
                 class="btn btn-primary">Download</a>
             </div>
             <div class="col-md-4"></div>
@@ -93,7 +94,7 @@
                   style="vertical-align: middle; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                   <td>${loop.count}</td>
                   <td class="text-truncate"><a
-                    href="<%=request.getContextPath()%>/post/detail?id=${post.id}">${post.title}</a></td>
+                    href="${pageContext.request.contextPath}/post/detail?id=${post.id}">${post.title}</a></td>
                   <td class="text-truncate">${post.description}</td>
                   <td class="text-truncate">${post.author}</td>
                   <td>${post.createdAt}</td>
@@ -109,7 +110,24 @@
               </c:forEach>
             </tbody>
           </table>
-          <div id="pagination"></div>
+
+          <div class="row">
+            <div class="col-md-7 d-flex align-items-center">
+              <label class="me-1">Page Size:</label>
+              <div>
+                  <select class="form-select" name="limit" onchange="redirectToPage(this.value)">
+                    <option value="${pageContext.request.contextPath}/post/${type}?pageNumber=${pageNum}&limit=5" ${limit == 5 ? 'selected' : '' }>5</option>
+                    <option value="${pageContext.request.contextPath}/post/${type}?pageNumber=${pageNum}&limit=10" ${limit == 10 ? 'selected' : '' }>10</option>
+                    <option value="${pageContext.request.contextPath}/post/${type}?pageNumber=${pageNum}&limit=15" ${limit == 15 ? 'selected' : '' }>15</option>
+                  </select>
+              </div>
+              <div class="ms-1">Showing ${((pageNum - 1) * limit) + 1}
+                to ${pageNum * limit > total ? total : pageNum * limit}
+                of ${total} entries.</div>
+            </div>
+            <div id="pagination"
+              class="col-md-5 d-flex justify-content-end"></div>
+          </div>
         </div>
       </c:when>
     </c:choose>

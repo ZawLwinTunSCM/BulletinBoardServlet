@@ -52,11 +52,12 @@ public class PostServiceImpl implements PostService {
      * @param id         int
      * @param searchData String
      * @param pageNumber int
+     * @param limit      int
      * @return List<PostDTO>
      */
     @Override
-    public List<PostDTO> doGetAllPosts(int id, String searchData, int pageNumber) {
-        return postDao.dbGetAllPosts(id, searchData, pageNumber).stream().map(post -> {
+    public List<PostDTO> doGetAllPosts(int id, String searchData, int pageNumber, int limit) {
+        return postDao.dbGetAllPosts(id, searchData, pageNumber, limit).stream().map(post -> {
             PostDTO postDTO = new PostDTO(post);
             postDTO.setAuthor(postDao.dbGetAuthor(postDTO.getCreatedUserId()));
             return postDTO;
@@ -69,12 +70,13 @@ public class PostServiceImpl implements PostService {
      * Get All Posts without LIMIT
      * </p>
      * 
-     * @param id int
+     * @param id         int
+     * @param searchData String
      * @return List<PostDTO>
      */
     @Override
-    public List<PostDTO> doGetPosts(int id) {
-        return postDao.dbGetPosts(id).stream().map(post -> {
+    public List<PostDTO> doGetPosts(int id, String searchData) {
+        return postDao.dbGetPosts(id, searchData).stream().map(post -> {
             PostDTO postDTO = new PostDTO(post);
             postDTO.setAuthor(postDao.dbGetAuthor(postDTO.getCreatedUserId()));
             return postDTO;

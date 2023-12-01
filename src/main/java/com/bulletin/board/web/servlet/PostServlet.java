@@ -219,6 +219,7 @@ public class PostServlet extends HttpServlet {
         String searchData = request.getParameter("searchData");
         String pageNum = request.getParameter("pageNumber");
         int pageNumber = Common.isDataNullOrEmpty(pageNum) ? 1 : Integer.parseInt(pageNum);
+
         if (pageNumber == 1 && isSearch && searchData != null) {
             session.setAttribute(Common.SESSION_SEARCH_DATA, searchData);
         }
@@ -227,11 +228,31 @@ public class PostServlet extends HttpServlet {
                 searchData = session.getAttribute(Common.SESSION_SEARCH_DATA).toString();
             }
         }
+        String limitString = request.getParameter("limit");
+        int limit = 10;
+        if (limitString == null) {
+            Object limitObj = session.getAttribute("limit");
+            if (limitObj == null) {
+                session.setAttribute("limit", limit);
+            } else {
+                limit = Integer.parseInt(limitObj.toString());
+            }
+        } else {
+            limit = Integer.parseInt(limitString);
+            session.setAttribute("limit", limit);
+        }
+
+        if (session.getAttribute("oldLimit") != null
+                && Integer.parseInt(session.getAttribute("oldLimit").toString()) != limit) {
+            pageNumber = 1;
+        }
+        session.setAttribute("oldLimit", limit);
         int id = Common.getLoginUserId(request);
-        List<PostDTO> posts = postService.doGetAllPosts(id, searchData, pageNumber);
+        List<PostDTO> posts = postService.doGetAllPosts(id, searchData, pageNumber, limit);
         request.setAttribute("listPost", posts);
         request.setAttribute("searchData", searchData);
         request.setAttribute("pageNum", pageNumber);
+        request.setAttribute("limit", limit);
         request.setAttribute("type", isSearch ? "search" : "list");
         request.setAttribute("total", postService.doGetTotalCount(id, searchData));
         Common.forwardToPage(Common.POST_LIST_URL, request, response);
@@ -327,14 +348,19 @@ public class PostServlet extends HttpServlet {
      * @return void
      */
     private void exportCSVPost(HttpServletRequest request, HttpServletResponse response) {
-        List<PostDTO> posts = postService.doGetPosts(Common.getLoginUserId(request));
+        String searchData = null;
+        Object sessionSeachData = request.getSession().getAttribute(Common.SESSION_SEARCH_DATA);
+        if (sessionSeachData != null) {
+            searchData = sessionSeachData.toString();
+        }
+        List<PostDTO> posts = postService.doGetPosts(Common.getLoginUserId(request), searchData);
         StringBuilder csvData = new StringBuilder();
         csvData.append("ID, Title, Description, Author, Status, Posted Date\n");
         for (int i = 0; i < posts.size(); i++) {
             PostDTO post = posts.get(i);
             String status = post.getStatus() == 0 ? "Private" : "Public";
-            csvData.append(post.getId() + "," + post.getTitle() + "," + post.getDescription() + "," + post.getAuthor()
-                    + "," + status + "," + post.getCreatedAt() + "\n");
+            csvData.append(post.getId() + "," + post.getTitle() + ",\"" + post.getDescription() + "\","
+                    + post.getAuthor() + "," + status + "," + post.getCreatedAt() + "\n");
         }
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=posts.csv");

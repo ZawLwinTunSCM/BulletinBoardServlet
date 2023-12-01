@@ -35,9 +35,10 @@ public interface PostService {
      * @param id         int
      * @param searchData String
      * @param pageNumber int
+     * @param limit      int
      * @return List<PostDTO>
      */
-    public List<PostDTO> doGetAllPosts(int id, String searchData, int pageNumber);
+    public List<PostDTO> doGetAllPosts(int id, String searchData, int pageNumber, int limit);
 
     /**
      * <h2>doGetPosts</h2>
@@ -45,10 +46,11 @@ public interface PostService {
      * Get All Posts without LIMIT
      * </p>
      *
-     * @param id int
+     * @param id         int
+     * @param searchData String
      * @return List<PostDTO>
      */
-    public List<PostDTO> doGetPosts(int id);
+    public List<PostDTO> doGetPosts(int id, String searchData);
 
     /**
      * <h2>doGetPostById</h2>

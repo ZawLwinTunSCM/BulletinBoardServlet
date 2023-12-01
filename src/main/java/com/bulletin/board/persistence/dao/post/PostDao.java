@@ -34,9 +34,10 @@ public interface PostDao {
      * @param id         int
      * @param searchData String
      * @param pageNumber int
+     * @param limit      int
      * @return List<Post>
      */
-    public List<Post> dbGetAllPosts(int id, String searchData, int pageNumber);
+    public List<Post> dbGetAllPosts(int id, String searchData, int pageNumber, int limit);
 
     /**
      * <h2>dbGetPosts</h2>
@@ -44,10 +45,11 @@ public interface PostDao {
      * Get All Posts without LIMIT
      * </p>
      *
-     * @param id int
+     * @param id         int
+     * @param searchData String
      * @return List<Post>
      */
-    public List<Post> dbGetPosts(int id);
+    public List<Post> dbGetPosts(int id, String searchData);
 
     /**
      * <h2>dbGetPostById</h2>

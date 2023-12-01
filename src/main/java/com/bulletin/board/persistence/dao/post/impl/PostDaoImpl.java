@@ -58,14 +58,14 @@ public class PostDaoImpl implements PostDao {
      * SELECT_ALL_POSTS
      * </p>
      */
-    private static final String SELECT_ALL_POSTS = "SELECT * FROM post WHERE created_user_id = ? OR status = 1 LIMIT 10 OFFSET ?";
+    private static final String SELECT_ALL_POSTS = "SELECT * FROM post WHERE created_user_id = ? OR status = 1 LIMIT ? OFFSET ?";
     /**
      * <h2>SELECT_POSTS</h2>
      * <p>
      * SELECT_POSTS
      * </p>
      */
-    private static final String SELECT_POSTS = "SELECT * FROM post WHERE created_user_id = ? OR status = 1";
+    private static final String SELECT_POSTS = "SELECT * FROM post WHERE (created_user_id = ? OR status = 1) AND (title LIKE ? OR description LIKE ?)";
     /**
      * <h2>SELECT_POST_BY_ID</h2>
      * <p>
@@ -79,7 +79,7 @@ public class PostDaoImpl implements PostDao {
      * SEARCH_POSTS
      * </p>
      */
-    private static final String SEARCH_POSTS = "SELECT * FROM post WHERE (created_user_id = ? OR status = 1) AND (title LIKE ? OR description LIKE ?) LIMIT 10 OFFSET ?";
+    private static final String SEARCH_POSTS = "SELECT * FROM post WHERE (created_user_id = ? OR status = 1) AND (title LIKE ? OR description LIKE ?) LIMIT ? OFFSET ?";
     /**
      * <h2>UPDATE_POST_SQL</h2>
      * <p>
@@ -168,10 +168,11 @@ public class PostDaoImpl implements PostDao {
      * @param id         int
      * @param searchData String
      * @param pageNumber int
+     * @param limit      int
      * @return List<Post>
      */
     @Override
-    public List<Post> dbGetAllPosts(int id, String searchData, int pageNumber) {
+    public List<Post> dbGetAllPosts(int id, String searchData, int pageNumber, int limit) {
         boolean isAllPost = Common.isDataNullOrEmpty(searchData);
         List<Post> posts = new ArrayList<>();
         try (Connection connection = getConnection();
@@ -181,10 +182,12 @@ public class PostDaoImpl implements PostDao {
                 preparedStatement.setInt(1, id);
                 preparedStatement.setString(2, "%" + searchData + "%");
                 preparedStatement.setString(3, "%" + searchData + "%");
-                preparedStatement.setInt(4, (pageNumber - 1) * 10);
+                preparedStatement.setInt(4, limit);
+                preparedStatement.setInt(5, (pageNumber - 1) * limit);
             } else {
                 preparedStatement.setInt(1, id);
-                preparedStatement.setInt(2, (pageNumber - 1) * 10);
+                preparedStatement.setInt(2, limit);
+                preparedStatement.setInt(3, (pageNumber - 1) * limit);
             }
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -209,15 +212,19 @@ public class PostDaoImpl implements PostDao {
      * Get All Posts without LIMIT
      * </p>
      * 
-     * @param id int
+     * @param id         int
+     * @param searchData String
      * @return List<Post>
      */
     @Override
-    public List<Post> dbGetPosts(int id) {
+    public List<Post> dbGetPosts(int id, String searchData) {
         List<Post> posts = new ArrayList<>();
+        String search = searchData == null ? "" : searchData;
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(SELECT_POSTS)) {
             preparedStatement.setInt(1, id);
+            preparedStatement.setString(2, "%" + search + "%");
+            preparedStatement.setString(3, "%" + search + "%");
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 int postId = rs.getInt("id");
@@ -327,9 +334,9 @@ public class PostDaoImpl implements PostDao {
                 PreparedStatement preparedStatement = connection
                         .prepareStatement(isAllPost ? COUNT_POSTS : SEARCH_COUNT_POSTS)) {
             if (!isAllPost) {
-                preparedStatement.setString(1, "%" + searchData + "%");
+                preparedStatement.setInt(1, id);
                 preparedStatement.setString(2, "%" + searchData + "%");
-                preparedStatement.setInt(3, id);
+                preparedStatement.setString(3, "%" + searchData + "%");
             } else {
                 preparedStatement.setInt(1, id);
             }

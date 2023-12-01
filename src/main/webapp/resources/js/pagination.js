@@ -82,7 +82,7 @@
 			var paginationUl = document.createElement("ul");
 			$(paginationUl)
 				.addClass("pagination")
-				.addClass("justify-content-end");
+				.addClass("my-0");
 			this.paginationUl = paginationUl;
 			return paginationUl;
 		};
