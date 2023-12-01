@@ -244,10 +244,29 @@ public class UserServlet extends HttpServlet {
                 searchData = session.getAttribute(Common.SESSION_SEARCH_DATA).toString();
             }
         }
-        List<UserDTO> users = userService.doGetAllUsers(searchData, pageNumber);
+        String limitString = request.getParameter("limit");
+        int limit = 10;
+        if (limitString == null) {
+            Object limitObj = session.getAttribute("limit");
+            if (limitObj == null) {
+                session.setAttribute("limit", limit);
+            } else {
+                limit = Integer.parseInt(limitObj.toString());
+            }
+        } else {
+            limit = Integer.parseInt(limitString);
+            session.setAttribute("limit", limit);
+        }
+        if (session.getAttribute("oldLimit") != null
+                && Integer.parseInt(session.getAttribute("oldLimit").toString()) != limit) {
+            pageNumber = 1;
+        }
+        session.setAttribute("oldLimit", limit);
+        List<UserDTO> users = userService.doGetAllUsers(searchData, pageNumber, limit);
         request.setAttribute("listUser", users);
         request.setAttribute("searchData", searchData);
         request.setAttribute("pageNum", pageNumber);
+        request.setAttribute("limit", limit);
         request.setAttribute("type", isSearch ? "search" : "list");
         request.setAttribute("total", userService.doGetTotalCount(searchData));
         Common.forwardToPage(Common.USER_LIST_URL, request, response);
@@ -386,10 +405,12 @@ public class UserServlet extends HttpServlet {
         int role = Integer.parseInt(request.getParameter("role"));
         String dobParam = request.getParameter("dob");
         Date dob = null;
-        try {
-            dob = new Date(dateFormat.parse(dobParam).getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (!Common.isDataNullOrEmpty(dobParam)) {
+            try {
+                dob = new Date(dateFormat.parse(dobParam).getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         Part filePart = request.getPart("profile");
         String fileName = null;

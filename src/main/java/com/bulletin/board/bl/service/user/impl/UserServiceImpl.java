@@ -54,11 +54,13 @@ public class UserServiceImpl implements UserService {
      * 
      * @param searchData String
      * @param pageNumber int
-     * @return
+     * @param limit      int
+     * @return List<UserDTO>
      */
     @Override
-    public List<UserDTO> doGetAllUsers(String searchData, int pageNumber) {
-        return userDao.dbGetAllUsers(searchData, pageNumber).stream().map(UserDTO::new).collect(Collectors.toList());
+    public List<UserDTO> doGetAllUsers(String searchData, int pageNumber, int limit) {
+        return userDao.dbGetAllUsers(searchData, pageNumber, limit).stream().map(UserDTO::new)
+                .collect(Collectors.toList());
     }
 
     /**

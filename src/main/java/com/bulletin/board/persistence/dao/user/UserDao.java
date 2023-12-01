@@ -33,9 +33,10 @@ public interface UserDao {
      *
      * @param searchData String
      * @param pageNumber int
+     * @param limit      int
      * @return List<User>
      */
-    public List<User> dbGetAllUsers(String searchData, int pageNumber);
+    public List<User> dbGetAllUsers(String searchData, int pageNumber, int limit);
 
     /**
      * <h2>dbGetUserById</h2>

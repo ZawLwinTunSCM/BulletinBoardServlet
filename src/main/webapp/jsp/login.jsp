@@ -34,9 +34,9 @@
                 required>
             </fieldset>
 
-            <div class="row justify-content-center text-center">
+            <div class="text-center">
               <button type="submit"
-                class="btn btn-primary col-2 mx-2 mb-2">Login</button>
+                class="btn btn-primary mx-2 mb-2">Login</button><br>
               <a href="<%=request.getContextPath()%>/user/new"
                 class="text-decoration-none"> Create Account <i
                 class="fa-solid fa-user-plus"></i>

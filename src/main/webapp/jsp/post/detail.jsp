@@ -44,10 +44,10 @@
         <c:if
           test="${sessionScope.userRole ==0 || sessionScope.userId == post.createdUserId}">
           <a href="edit?id=${post.id}"
-            class="btn btn-primary col-2 mx-3">Edit</a>
+            class="btn btn-primary mx-3">Edit</a>
         </c:if>
         <a href="<%=request.getContextPath()%>/post/list"
-          class="btn btn-dark col-2 mx-3">Back</a>
+          class="btn btn-dark mx-3">Back</a>
       </div>
     </div>
   </div>

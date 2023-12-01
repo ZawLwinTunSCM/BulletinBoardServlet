@@ -84,32 +84,29 @@
           </c:if>
 
           <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3 required" for="phone">Phone</label>
+            <label class="fw-medium col-md-3" for="phone">Phone</label>
             <div class="col-md-9">
-              <input type="text" value="${user.phone}"
+              <input type="number" value="${user.phone}"
                 class="form-control" name="phone" id="phone"
-                pattern="\d*" maxlength="11"
-                oninvalid="this.setCustomValidity('This is not a valid phone number\n(09xxxxxxxxx)')"
-                oninput="this.setCustomValidity('')" required>
+                oninput="validatePhoneNumber()">
             </div>
           </div>
 
           <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3 required" for="address">Address</label>
+            <label class="fw-medium col-md-3" for="address">Address</label>
             <div class="col-md-9">
               <input type="text" value="${user.address}"
-                class="form-control" name="address" id="address"
-                required>
+                class="form-control" name="address" id="address">
             </div>
           </div>
 
           <div class="row mb-3 align-items-center">
-            <label class="fw-medium col-md-3 required" for="dob"
+            <label class="fw-medium col-md-3" for="dob"
               data-bs-toggle="tooltip" data-bs-placement="left"
               data-bs-title="Date of Birth">DOB</label>
             <div class="col-md-9">
               <input type="date" value="${user.dob}"
-                class="form-control" name="dob" id="dob" required>
+                class="form-control" name="dob" id="dob">
             </div>
           </div>
 
@@ -133,11 +130,11 @@
             </div>
           </div>
 
-          <div class="row justify-content-center">
-            <button type="submit" class="btn btn-primary col-2 mx-2">${type == 'edit' ? 'Update' : 'Add'}</button>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary mx-2">${type == 'edit' ? 'Update' : 'Add'}</button>
             <a
               href="<%=request.getContextPath()%>${empty sessionScope.userRole ? '/loginPage' : '/user/list'}"
-              class="btn btn-dark col-2 mx-2">Back</a>
+              class="btn btn-dark mx-2">Back</a>
           </div>
 
         </form>

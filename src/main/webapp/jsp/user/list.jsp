@@ -46,6 +46,7 @@
         <input type="hidden" id="total" value="${total}">
         <input type="hidden" id="pageNum" value="${pageNum}">
         <input type="hidden" id="type" value="${type}">
+        <input type="hidden" id="limit" value="${limit}">
         <div class="col-md-8">
           <h3 class="text-center">List of Users</h3>
           <hr>
@@ -100,7 +101,31 @@
               </c:forEach>
             </tbody>
           </table>
-          <div id="pagination"></div>
+
+          <div class="row">
+            <div class="col-md-7 d-flex align-items-center">
+              <label class="me-1">Page Size:</label>
+              <div>
+                <select class="form-select" name="limit"
+                  onchange="redirectToPage(this.value)">
+                  <option
+                    value="${pageContext.request.contextPath}/user/${type}?pageNumber=${pageNum}&limit=5"
+                    ${limit == 5 ? 'selected' : '' }>5</option>
+                  <option
+                    value="${pageContext.request.contextPath}/user/${type}?pageNumber=${pageNum}&limit=10"
+                    ${limit == 10 ? 'selected' : '' }>10</option>
+                  <option
+                    value="${pageContext.request.contextPath}/user/${type}?pageNumber=${pageNum}&limit=15"
+                    ${limit == 15 ? 'selected' : '' }>15</option>
+                </select>
+              </div>
+              <div class="ms-1">Showing ${((pageNum - 1) * limit) + 1}
+                to ${pageNum * limit > total ? total : pageNum * limit}
+                of ${total} entries.</div>
+            </div>
+            <div id="pagination"
+              class="col-md-5 d-flex justify-content-end"></div>
+          </div>
         </div>
       </c:when>
     </c:choose>

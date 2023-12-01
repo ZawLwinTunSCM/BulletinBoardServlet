@@ -34,9 +34,10 @@ public interface UserService {
      *
      * @param searchData String
      * @param pageNumber int
+     * @param limit      int
      * @return List<UserDTO>
      */
-    public List<UserDTO> doGetAllUsers(String searchData, int pageNumber);
+    public List<UserDTO> doGetAllUsers(String searchData, int pageNumber, int limit);
 
     /**
      * <h2>doGetUserById</h2>

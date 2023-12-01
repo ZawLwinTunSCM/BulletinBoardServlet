@@ -2,6 +2,17 @@ window.onload = function() {
 	setInitialImage();
 };
 
+function validatePhoneNumber() {
+	const input = document.getElementById('phone');
+	const value = input.value.trim();
+
+	if (value.length !== 11 || isNaN(value)) {
+		input.setCustomValidity("This is not a valid phone number\n(09xxxxxxxxx)");
+	} else {
+		input.setCustomValidity('');
+	}
+}
+
 function addLink(id) {
 	document.getElementById("deleteLink").setAttribute("href", href = "delete?id=" + id);
 }

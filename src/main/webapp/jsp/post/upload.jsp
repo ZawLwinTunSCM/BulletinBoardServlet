@@ -25,13 +25,13 @@
               name="file" required />
           </fieldset>
 
-          <div class="row justify-content-center">
-            <button type="submit" class="btn btn-primary col-2 mx-2">Upload</button>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary mx-2">Upload</button>
             <a
               href="<%=request.getContextPath()%>/post/downloadTemplate"
-              class="btn btn-primary col-5">Download Template</a> <a
+              class="btn btn-primary">Download Template</a> <a
               href="<%=request.getContextPath()%>/post/list"
-              class="btn btn-dark col-2 mx-2">Back</a>
+              class="btn btn-dark mx-2">Back</a>
           </div>
         </form>
       </div>

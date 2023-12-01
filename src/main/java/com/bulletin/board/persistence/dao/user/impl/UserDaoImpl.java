@@ -58,7 +58,7 @@ public class UserDaoImpl implements UserDao {
      * SELECT_ALL_USERS
      * </p>
      */
-    private static final String SELECT_ALL_USERS = "SELECT * FROM user LIMIT 10 OFFSET ?";
+    private static final String SELECT_ALL_USERS = "SELECT * FROM user LIMIT ? OFFSET ?";
     /**
      * <h2>SELECT_USER_BY_ID</h2>
      * <p>
@@ -79,7 +79,7 @@ public class UserDaoImpl implements UserDao {
      * SEARCH_USERS
      * </p>
      */
-    private static final String SEARCH_USERS = "SELECT * FROM user WHERE name LIKE ? OR email LIKE ? LIMIT 10 OFFSET ?";
+    private static final String SEARCH_USERS = "SELECT * FROM user WHERE name LIKE ? OR email LIKE ? LIMIT ? OFFSET ?";
     /**
      * <h2>UPDATE_USER_SQL</h2>
      * <p>
@@ -172,10 +172,11 @@ public class UserDaoImpl implements UserDao {
      * 
      * @param searchData String
      * @param pageNumber int
+     * @param limit      int
      * @return List<User>
      */
     @Override
-    public List<User> dbGetAllUsers(String searchData, int pageNumber) {
+    public List<User> dbGetAllUsers(String searchData, int pageNumber, int limit) {
         boolean isAllUser = Common.isDataNullOrEmpty(searchData);
         List<User> users = new ArrayList<>();
         try (Connection connection = getConnection();
@@ -184,9 +185,11 @@ public class UserDaoImpl implements UserDao {
             if (!isAllUser) {
                 preparedStatement.setString(1, "%" + searchData + "%");
                 preparedStatement.setString(2, "%" + searchData + "%");
-                preparedStatement.setInt(3, (pageNumber - 1) * 10);
+                preparedStatement.setInt(3, limit);
+                preparedStatement.setInt(4, (pageNumber - 1) * limit);
             } else {
-                preparedStatement.setInt(1, (pageNumber - 1) * 10);
+                preparedStatement.setInt(1, limit);
+                preparedStatement.setInt(2, (pageNumber - 1) * limit);
             }
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {

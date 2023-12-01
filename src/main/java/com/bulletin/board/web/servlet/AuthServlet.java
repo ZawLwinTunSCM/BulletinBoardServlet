@@ -131,7 +131,7 @@ public class AuthServlet extends HttpServlet {
                 session.setAttribute(Common.SESSION_USER_ROLE, user.getRole());
                 response.sendRedirect(request.getContextPath() + Common.LOGIN_POST_LIST_URL);
             } else {
-                request.getSession().setAttribute("errorMsg", "Invalid email or Password!");
+                request.getSession().setAttribute("errorMsg", "Invalid email or password!");
                 Common.forwardToPage(Common.LOGIN_JSP, request, response);
             }
         }

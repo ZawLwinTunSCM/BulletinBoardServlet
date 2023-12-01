@@ -57,10 +57,10 @@
             </div>
           </div>
 
-          <div class="row justify-content-center">
-            <button type="submit" class="btn btn-primary col-2 mx-2">${post != null ? 'Update' : 'Add'}</button>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary mx-2">${post != null ? 'Update' : 'Add'}</button>
             <a href="<%=request.getContextPath()%>/post/list"
-              class="btn btn-dark col-2 mx-2">Back</a>
+              class="btn btn-dark mx-2">Back</a>
           </div>
 
         </form>

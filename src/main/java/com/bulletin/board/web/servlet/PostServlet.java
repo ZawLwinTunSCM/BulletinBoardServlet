@@ -219,7 +219,6 @@ public class PostServlet extends HttpServlet {
         String searchData = request.getParameter("searchData");
         String pageNum = request.getParameter("pageNumber");
         int pageNumber = Common.isDataNullOrEmpty(pageNum) ? 1 : Integer.parseInt(pageNum);
-
         if (pageNumber == 1 && isSearch && searchData != null) {
             session.setAttribute(Common.SESSION_SEARCH_DATA, searchData);
         }
@@ -241,7 +240,6 @@ public class PostServlet extends HttpServlet {
             limit = Integer.parseInt(limitString);
             session.setAttribute("limit", limit);
         }
-
         if (session.getAttribute("oldLimit") != null
                 && Integer.parseInt(session.getAttribute("oldLimit").toString()) != limit) {
             pageNumber = 1;
