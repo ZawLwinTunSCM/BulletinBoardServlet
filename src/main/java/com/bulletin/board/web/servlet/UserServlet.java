@@ -316,6 +316,9 @@ public class UserServlet extends HttpServlet {
         UserForm updatedUser = getUserParameters(request);
         boolean isDuplicateUser = userService.doUpdateUser(updatedUser);
         if (isDuplicateUser) {
+            if (updatedUser.getProfile() == null) {
+                updatedUser.setProfile(userService.doGetUserById(updatedUser.getId()).getProfile());
+            }
             request.setAttribute("user", updatedUser);
             request.setAttribute("type", "edit");
             request.setAttribute("errEmail", "This email is already registered!");
