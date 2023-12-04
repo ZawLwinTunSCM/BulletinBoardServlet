@@ -62,7 +62,8 @@
             <div class="col-md-6">
               <label class="fw-medium required" for="email">Email</label>
               <input type="email" value="${user.email}"
-                class="form-control" name="email" id="email" required>
+                class="form-control" name="email" id="email" required><span
+                  class="text-danger">${errEmail}</span>
             </div>
             <div class="col-md-6">
               <label class="fw-medium" for="address">Address</label> <input

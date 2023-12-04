@@ -38,12 +38,18 @@ public class UserServiceImpl implements UserService {
      * </p>
      * 
      * @param userForm UserForm
+     * @return boolean
      */
     @Override
-    public void doInsertUser(UserForm userForm) {
+    public boolean doInsertUser(UserForm userForm) {
         User user = new User(userForm);
-        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
-        userDao.dbInsertUser(user);
+        if (userDao.dbisDuplicateUser(0, userForm.getEmail())) {
+            return true;
+        } else {
+            user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+            userDao.dbInsertUser(user);
+            return false;
+        }
     }
 
     /**

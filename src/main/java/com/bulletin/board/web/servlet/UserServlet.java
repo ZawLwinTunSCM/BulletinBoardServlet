@@ -199,20 +199,24 @@ public class UserServlet extends HttpServlet {
         newUser.setCreatedUserId(id);
         if (!newUser.getPassword().equals(newUser.getConfirmPassword())) {
             request.setAttribute("user", newUser);
-            request.getSession().setAttribute("err", "Password and Confirm Password must be the same!");
+            request.setAttribute("err", "Password and Confirm Password must be the same!");
             Common.forwardToPage(Common.USER_INSERT_JSP, request, response);
-            request.getSession().removeAttribute("err");
             return;
         }
-        userService.doInsertUser(newUser);
-        int role = Common.getLoginUserRole(request);
-        if (role == 3) {
-            request.getSession().setAttribute("successMsg", "User Account is created successfully!");
-            Common.forwardToPage(Common.LOGIN_JSP, request, response);
-            request.getSession().removeAttribute("successMsg");
+        boolean isDuplicateUser = userService.doInsertUser(newUser);
+        if (isDuplicateUser) {
+            request.setAttribute("user", newUser);
+            request.setAttribute("errEmail", "This email is already registered!");
+            Common.forwardToPage(Common.USER_INSERT_JSP, request, response);
         } else {
+            int role = Common.getLoginUserRole(request);
             request.getSession().setAttribute("successMsg", "User Account is created successfully!");
-            Common.redirectToPage("list", response);
+            if (role == 3) {
+                Common.forwardToPage(Common.LOGIN_JSP, request, response);
+                request.getSession().removeAttribute("successMsg");
+            } else {
+                Common.redirectToPage("list", response);
+            }
         }
     }
 

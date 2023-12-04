@@ -385,7 +385,7 @@ public class PostDaoImpl implements PostDao {
     /**
      * <h2>dbisDuplicatePost</h2>
      * <p>
-     * Check if the post is ready existed or not
+     * Check if the post is already existed or not
      * </p>
      * 
      * @param id    int

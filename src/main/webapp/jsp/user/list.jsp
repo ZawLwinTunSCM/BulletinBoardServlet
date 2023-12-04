@@ -71,17 +71,16 @@
             <thead>
               <tr>
                 <th class="col-1">No.</th>
-                <th class="col-2">Name</th>
-                <th class="col-3">Email</th>
+                <th class="col-1">Name</th>
+                <th class="col">Email</th>
                 <th class="col-2">Date of Birth</th>
-                <th>Role</th>
-                <th class="text-center col-3">Actions</th>
+                <th class="col-1">Role</th>
+                <th class="text-center col-2">Actions</th>
               </tr>
             </thead>
             <tbody>
               <c:forEach var="user" items="${listUser}" varStatus="loop">
-                <tr
-                  style="vertical-align: middle; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <tr style="vertical-align: middle; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                   <td>${loop.count}</td>
                   <td class="text-truncate"><a
                     href="${pageContext.request.contextPath}/user/detail?id=${user.id}">
@@ -89,14 +88,13 @@
                   <td class="text-truncate">${user.email}</td>
                   <td>${user.dob}</td>
                   <td>${user.role == 0 ? 'Admin' : 'User'}</td>
-                  <td class="d-flex justify-content-between"><a
+                  <td class="d-flex justify-content-center"><a
                     href="edit?id=${user.id}"
-                    class="btn col-5 ms-2 ${sessionScope.userRole ==0 || sessionScope.userId == user.id ? 'btn-primary':'btn-secondary disabled'}">Edit</a>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    class="btn mx-3 ${sessionScope.userRole ==0 || sessionScope.userId == user.id ? 'btn-primary':'btn-secondary disabled'}"><i class="fa-solid fa-user-pen"></i></a>
                     <button type="button" data-bs-toggle="modal"
                       data-bs-target="#deleteModal"
                       onclick="addLink(${user.id})"
-                      class="btn col-5 me-2 ${sessionScope.userRole ==0 || sessionScope.userId == user.id ? 'btn-danger' :'btn-secondary disabled'}">Delete</button></td>
+                      class="btn mx-3 ${sessionScope.userRole ==0 || sessionScope.userId == user.id ? 'btn-danger' :'btn-secondary disabled'}"><i class="fa-solid fa-user-xmark"></i></button></td>
                 </tr>
               </c:forEach>
             </tbody>

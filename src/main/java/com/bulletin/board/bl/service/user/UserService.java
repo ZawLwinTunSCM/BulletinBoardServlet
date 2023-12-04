@@ -22,9 +22,9 @@ public interface UserService {
      * </p>
      *
      * @param userForm UserForm
-     * @return void
+     * @return boolean
      */
-    public void doInsertUser(UserForm userForm);
+    public boolean doInsertUser(UserForm userForm);
 
     /**
      * <h2>doGetAllUsers</h2>

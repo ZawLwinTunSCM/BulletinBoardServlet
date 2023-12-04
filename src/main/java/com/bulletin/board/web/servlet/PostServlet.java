@@ -124,9 +124,6 @@ public class PostServlet extends HttpServlet {
             case "/uploadPost":
                 uploadPost(request, response);
                 break;
-            case "/isDuplicatePost":
-                isDuplicatePost(request, response);
-                break;
             default:
                 Common.error404(request, response);
                 break;
@@ -455,11 +452,6 @@ public class PostServlet extends HttpServlet {
         request.getSession().setAttribute("successMsg", "Data are successfully uploaded!");
         Common.forwardToPage(Common.POST_UPLOAD_URL, request, response);
         request.getSession().removeAttribute("successMsg");
-    }
-
-    private boolean isDuplicatePost(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        return true;
     }
 
     /**

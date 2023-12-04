@@ -276,9 +276,18 @@ public class Common {
         return null;
     }
 
+    /**
+     * <h2>sendMail</h2>
+     * <p>
+     * send email
+     * </p>
+     *
+     * @param email String
+     * @param id    id
+     * @return void
+     */
     public static void sendMail(String email, int id) {
-        String receiverEmail = "";
-        String senderEmail = ""; // gmail
+        String senderEmail = ""; // gmail address
         String senderPassword = ""; // app password
         Properties properties = System.getProperties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
@@ -296,7 +305,7 @@ public class Common {
         try {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(senderEmail));
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
             message.setSubject("Password Reset");
             String resetLink = "http://localhost:8080/ServletBulletinBoard/auth/resetPassword?id=" + id;
             String emailContent = "Dear User,\n\n" + "To reset your password, please click on the following link:\n"

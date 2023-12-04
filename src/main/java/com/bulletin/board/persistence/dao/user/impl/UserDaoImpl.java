@@ -117,6 +117,14 @@ public class UserDaoImpl implements UserDao {
     private static final String SEARCH_COUNT_USERS = "SELECT COUNT(*) as count FROM user WHERE name LIKE ? OR email LIKE ?";
 
     /**
+     * <h2>IS_DUPLICATE_User</h2>
+     * <p>
+     * IS_DUPLICATE_User
+     * </p>
+     */
+    private static String IS_DUPLICATE_User = "SELECT count(*) as count FROM user WHERE user.email = ?";
+
+    /**
      * <h2>getConnection</h2>
      * <p>
      * Get the connection from MySQL
@@ -381,5 +389,35 @@ public class UserDaoImpl implements UserDao {
             e.printStackTrace();
         }
         return count;
+    }
+
+    /**
+     * <h2>dbisDuplicateUser</h2>
+     * <p>
+     * Check if the user is already existed or not
+     * </p>
+     * 
+     * @param id    int
+     * @param email String
+     * @return boolean
+     */
+    @Override
+    public boolean dbisDuplicateUser(int id, String email) {
+        try (Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(id != 0 ? IS_DUPLICATE_User + " AND id != ?" : IS_DUPLICATE_User)) {
+            preparedStatement.setString(1, email);
+            if (id != 0) {
+                preparedStatement.setInt(2, id);
+            }
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int titleCount = rs.getInt("count");
+                return titleCount > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

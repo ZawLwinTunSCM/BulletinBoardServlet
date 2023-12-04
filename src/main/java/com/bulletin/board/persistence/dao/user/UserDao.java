@@ -104,4 +104,16 @@ public interface UserDao {
      * @return int
      */
     public int dbGetTotalCount(String searchData);
+
+    /**
+     * <h2>dbisDuplicateUser</h2>
+     * <p>
+     * Check if the user is already existed or not
+     * </p>
+     *
+     * @param id    int
+     * @param email String
+     * @return boolean
+     */
+    public boolean dbisDuplicateUser(int id, String email);
 }
