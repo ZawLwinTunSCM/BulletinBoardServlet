@@ -196,7 +196,6 @@ public class AuthServlet extends HttpServlet {
             Common.sendMail(email, user.getId());
             request.getSession().setAttribute("successMsg", "Reset Password Link sent successfully!");
             Common.redirectToPage("loginPage", response);
-            request.getSession().removeAttribute("successMsg");
         }
     }
 
