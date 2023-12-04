@@ -68,9 +68,9 @@ public interface UserService {
      * </p>
      *
      * @param user UserForm
-     * @return void
+     * @return boolean
      */
-    public void doUpdateUser(UserForm user);
+    public boolean doUpdateUser(UserForm user);
 
     /**
      * <h2>doChangePassword</h2>

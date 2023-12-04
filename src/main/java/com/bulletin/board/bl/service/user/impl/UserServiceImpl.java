@@ -105,22 +105,29 @@ public class UserServiceImpl implements UserService {
      * </p>
      * 
      * @param userForm UserForm
+     * @return boolean
      */
     @Override
-    public void doUpdateUser(UserForm userForm) {
+    public boolean doUpdateUser(UserForm userForm) {
         UserDTO userDTO = new UserDTO(userDao.dbGetUserById(userForm.getId()));
-        if (userForm.getProfile() != null) {
-            userDTO.setProfile(userForm.getProfile());
+        if (userDao.dbisDuplicateUser(userDTO.getId(), userForm.getEmail())) {
+            return true;
+        } else {
+            if (userForm.getProfile() != null) {
+                userDTO.setProfile(userForm.getProfile());
+            }
+            userDTO.setName(userForm.getName());
+            userDTO.setEmail(userForm.getEmail());
+            userDTO.setPhone(userForm.getPhone());
+            userDTO.setAddress(userForm.getAddress());
+            userDTO.setDob(userForm.getDob());
+            userDTO.setRole(userForm.getRole());
+            User user = new User(new UserForm(userDTO));
+            user.setUpdatedAt(new Date(System.currentTimeMillis()));
+            userDao.dbUpdateUser(user);
+            return false;
         }
-        userDTO.setName(userForm.getName());
-        userDTO.setEmail(userForm.getEmail());
-        userDTO.setPhone(userForm.getPhone());
-        userDTO.setAddress(userForm.getAddress());
-        userDTO.setDob(userForm.getDob());
-        userDTO.setRole(userForm.getRole());
-        User user = new User(new UserForm(userDTO));
-        user.setUpdatedAt(new Date(System.currentTimeMillis()));
-        userDao.dbUpdateUser(user);
+
     }
 
     /**

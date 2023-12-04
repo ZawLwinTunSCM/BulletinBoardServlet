@@ -314,15 +314,22 @@ public class UserServlet extends HttpServlet {
     private void updateUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         UserForm updatedUser = getUserParameters(request);
-        userService.doUpdateUser(updatedUser);
-        if (updatedUser.getId() == Common.getLoginUserId(request)) {
-            HttpSession session = request.getSession();
-            session.setAttribute(Common.SESSION_USER_ID, updatedUser.getId());
-            session.setAttribute(Common.SESSION_USER_NAME, updatedUser.getName());
-            session.setAttribute(Common.SESSION_USER_ROLE, updatedUser.getRole());
+        boolean isDuplicateUser = userService.doUpdateUser(updatedUser);
+        if (isDuplicateUser) {
+            request.setAttribute("user", updatedUser);
+            request.setAttribute("type", "edit");
+            request.setAttribute("errEmail", "This email is already registered!");
+            Common.forwardToPage(Common.USER_INSERT_JSP, request, response);
+        } else {
+            if (updatedUser.getId() == Common.getLoginUserId(request)) {
+                HttpSession session = request.getSession();
+                session.setAttribute(Common.SESSION_USER_ID, updatedUser.getId());
+                session.setAttribute(Common.SESSION_USER_NAME, updatedUser.getName());
+                session.setAttribute(Common.SESSION_USER_ROLE, updatedUser.getRole());
+            }
+            request.getSession().setAttribute("successMsg", "User updated successfully!");
+            Common.redirectToPage("list", response);
         }
-        request.getSession().setAttribute("successMsg", "User updated successfully!");
-        Common.redirectToPage("list", response);
     }
 
     /**
