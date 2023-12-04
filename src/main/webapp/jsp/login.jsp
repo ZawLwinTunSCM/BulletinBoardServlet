@@ -28,19 +28,26 @@
                 type="email" class="form-control" name="email" required>
             </fieldset>
 
-            <fieldset class="form-group mb-3">
+            <fieldset class="form-group mb-1">
               <label class="fw-medium" for="title">Password</label> <input
                 type="password" class="form-control" name="password"
                 required>
             </fieldset>
 
-            <div class="text-center">
-              <button type="submit"
-                class="btn btn-primary mx-2 mb-2">Login</button><br>
+            <fieldset class="row mb-3">
               <a href="${pageContext.request.contextPath}/user/new"
-                class="text-decoration-none"> Create Account <i
-                class="fa-solid fa-user-plus"></i>
+                class="text-decoration-none col-md-6"> Create
+                Account <i class="fa-solid fa-user-plus"></i>
+              </a> <a
+                href="${pageContext.request.contextPath}/auth/forgotPassword"
+                class="text-decoration-none col-md-6 text-end">
+                Forgot Password? <i class="fa-solid fa-repeat"></i>
               </a>
+            </fieldset>
+
+
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary mx-2 mb-2">Login</button>
             </div>
           </form>
         </div>

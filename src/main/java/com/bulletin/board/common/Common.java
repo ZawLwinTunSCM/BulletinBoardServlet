@@ -1,6 +1,7 @@
 package com.bulletin.board.common;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,6 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * <h2>Common Class</h2>
@@ -62,6 +72,22 @@ public class Common {
      * </p>
      */
     public static final String LOGIN_POST_LIST_URL = "/post/list";
+
+    /**
+     * <h2>FORGOT_PASSWORD_JSP</h2>
+     * <p>
+     * FORGOT_PASSWORD_JSP
+     * </p>
+     */
+    public static final String FORGOT_PASSWORD_JSP = "/jsp/forgotPassword.jsp";
+
+    /**
+     * <h2>RESET_PASSWORD_JSP</h2>
+     * <p>
+     * RESET_PASSWORD_JSP
+     * </p>
+     */
+    public static final String RESET_PASSWORD_JSP = "/jsp/resetPassword.jsp";
 
     /**
      * <h2>POST_INSERT_JSP</h2>
@@ -248,5 +274,40 @@ public class Common {
             }
         }
         return null;
+    }
+
+    public static void sendMail(String email, int id) {
+        String receiverEmail = "";
+        String senderEmail = ""; // gmail
+        String senderPassword = ""; // app password
+        Properties properties = System.getProperties();
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(senderEmail, senderPassword);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(senderEmail));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
+            message.setSubject("Password Reset");
+            String resetLink = "http://localhost:8080/ServletBulletinBoard/auth/resetPassword?id=" + id;
+            String emailContent = "Dear User,\n\n" + "To reset your password, please click on the following link:\n"
+                    + resetLink + "\n\n" + "If you didn't request a password reset, please ignore this email.\n\n"
+                    + "Best regards,\nYour Bulletin Board Team";
+
+            message.setText(emailContent);
+            Transport.send(message);
+            System.out.println("Sent message successfully....");
+        } catch (MessagingException mex) {
+            mex.printStackTrace();
+        }
     }
 }

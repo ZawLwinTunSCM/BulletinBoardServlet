@@ -73,12 +73,26 @@ public class AuthServlet extends HttpServlet {
         case "/loginPage":
             Common.forwardToPage(Common.LOGIN_JSP, request, response);
             request.getSession().removeAttribute("successMsg");
+            request.getSession().removeAttribute("removeMsg");
             break;
         case "/login":
             loginAction(request, response);
             break;
         case "/logout":
             logoutAction(request, response);
+            break;
+        case "/forgotPassword":
+            Common.forwardToPage(Common.FORGOT_PASSWORD_JSP, request, response);
+            break;
+        case "/forgotPass":
+            forgotPassword(request, response);
+            break;
+        case "/resetPassword":
+            request.getSession().setAttribute("resetId", request.getQueryString().split("=")[1]);
+            Common.forwardToPage(Common.RESET_PASSWORD_JSP, request, response);
+            break;
+        case "/resetPass":
+            resetPassword(request, response);
             break;
         default:
             Common.error404(request, response);
@@ -156,5 +170,51 @@ public class AuthServlet extends HttpServlet {
         session.invalidate();
         request.getSession().setAttribute("successMsg", "You have successfully logged out!");
         Common.redirectToPage("loginPage", response);
+    }
+
+    /**
+     * <h2>forgotPassword</h2>
+     * <p>
+     * 
+     * </p>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     * @return void
+     */
+    private void forgotPassword(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String email = request.getParameter("email");
+        UserDTO user = userService.doGetUserByEmail(email);
+        if (user == null) {
+            request.setAttribute("err", "Email is not registered!");
+            request.setAttribute("email", email);
+            Common.forwardToPage(Common.FORGOT_PASSWORD_JSP, request, response);
+        } else {
+            Common.sendMail(email, user.getId());
+            request.getSession().setAttribute("successMsg", "Reset Password Link sent successfully!");
+            Common.redirectToPage("loginPage", response);
+            request.getSession().removeAttribute("successMsg");
+        }
+    }
+
+    private void resetPassword(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getSession().getAttribute("resetId").toString());
+        String newPass = request.getParameter("newPass");
+        String conNewPass = request.getParameter("conNewPass");
+        request.setAttribute("newPass", newPass);
+        request.setAttribute("conNewPass", conNewPass);
+        if (!newPass.equals(conNewPass)) {
+            request.setAttribute("err", "New Password and Confirm New Password must be the same!");
+            Common.forwardToPage(Common.RESET_PASSWORD_JSP, request, response);
+            return;
+        } else {
+            userService.doChangePassword(id, newPass);
+            request.getSession().setAttribute("successMsg", "Password reset successfully!");
+            Common.redirectToPage("loginPage", response);
+        }
     }
 }
